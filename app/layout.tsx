@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "../components/Header";
 import { Toaster } from "sonner";
+import {AuthProvider} from '@/context/AuthContext'
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,19 +20,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            classNames: {
-              success: "bg-green-400 text-white",
-              error: "bg-red-500 text-white",
-            },
-          }}
-        />
-        <Header />
-        {children}
-      </body>
+      <AuthProvider>
+        <body className={inter.className}>
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              classNames: {
+                success: "bg-green-400 text-white",
+                error: "bg-red-500 text-white",
+              },
+            }}
+          />
+          <Header />
+          {children}
+        </body>
+      </AuthProvider>
     </html>
   );
 }
