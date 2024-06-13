@@ -1,0 +1,70 @@
+const quoterContract = {
+	address:"mantra1gm3flx5m23ag02e3pk7j3p864ze8z8s6kytre2c4qhg2q5tqykasen0ecx",
+	queryables:{
+		PoolConfig:{
+			name:"poolConfig",
+			args:[],
+		},
+		GetOwner:{
+			name:"getOwner",
+			args:[],
+		},
+		GetTotalAssetAvailable:{
+			name:"getTotalAssetAvailable",
+			args:[],
+		},
+		GetTotalCollateralAvailable:{
+			name:"getTotalCollateralAvailable",
+			args:[],
+		},
+		GetUserPrinciple:{
+			name:"getUserPrinciple",
+			args:["user"], 
+		},
+		GetUserPrincipleToRepay:{
+			name:"getUserPrincipleToRepay",
+			args:["user"], 
+		},
+		Assets:{
+			name:"assets",
+			args:["user"],
+		},
+		UserAssetInfo:{
+			name:"userAssetInfo",
+			args:["user", "denom"],
+		} ,
+		UserData:{
+			name:"userData",
+			args:["user"],  
+		},
+		AssetInfo:{
+			name:"assetInfo",
+			args:["denom"],
+		},
+		MaxLiquidationAmount:{
+			name:"maxLiquidationAmount",
+			args:["user"],  
+		},
+		GetDepositQuote:{
+			name:"getDepositQuote",
+			args:["user","amount"],  
+		},
+		GetLoanQuote:{
+			name:"getLoanQuote",
+			args:["user","amount"],
+		},
+		GetWithdrawablePositions:{
+			name:"getWithdrawablePositions",
+			args:["user"], 
+		},
+		GetRepayablePositions:{
+			name:"getRepayablePositions",
+			args:["user"], 
+		}
+	}
+}
+
+
+export {
+	quoterContract
+}

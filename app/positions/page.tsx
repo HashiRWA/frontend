@@ -1,35 +1,39 @@
-import { Position } from "@/types";
+"use client"
+
 import PositionList from "./_components/PositionList";
-import { positions } from "@/data/positions";
+import { useContext } from "react";
+import { BlockChainContext } from "@/context/BlockChainContext";
+import {Position} from "../../types"
+
+function dividePositions(positions: Position[]) {
+	const currentTimestamp = Math.floor(Date.now() / 1000); // Current time in Unix timestamp
+  
+	const active: Position[] = [];
+	const matured: Position[] = [];
+  
+	positions.forEach(position => {
+	  if (position.maturity > currentTimestamp) {
+		active.push(position);
+	  } else {
+		matured.push(position);
+	  }
+	});
+  
+	return { active, matured };
+}
 
 const PositionsPage = () => {
-  const getActiveAndMaturedPositions = (positions: Position[]) => {
-    const activePositions: Position[] = [];
-    const maturedPositions: Position[] = [];
-    const now = new Date();
 
-    positions.forEach((position) => {
-      const maturityDate = new Date(position.maturity);
-      if (maturityDate >= now) {
-        activePositions.push(position);
-      } else {
-        maturedPositions.push(position);
-      }
-    });
+	const {positions} = useContext(BlockChainContext)
+	const {active,matured} = dividePositions(positions)
 
-    return { activePositions, maturedPositions };
-  };
-
-  const { activePositions, maturedPositions } = getActiveAndMaturedPositions(positions);
-
-  return (
-    <div className="max-w-[45rem] mx-auto py-4">
-      <h1 className="font-bold text-xl pb-3">My Positions</h1>
-      <div className="space-y-8">
-        <PositionList title="Active Positions" positions={activePositions} />
-        <PositionList title="Matured Positions" positions={maturedPositions} />
-      </div>
-    </div>
-  );
+	return (
+		<div className="mx-auto py-4  my-28 w-[90%]  rounded-lg bg-white ">
+			<div className="space-y-8 w-full px-4">
+				<PositionList title="Active" positions={active} />
+				<PositionList title="Matured" positions={matured} />
+			</div>
+		</div>
+	);
 };
 export default PositionsPage;

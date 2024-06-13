@@ -8,7 +8,7 @@ export interface ContractConfig {
 	signer:OfflineDirectSigner
 }
 
-export async function useContractWrite({
+export async function useBalance({
     address,
 	denom,
     signer

@@ -1,6 +1,7 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate"
 import { OfflineAminoSigner, OfflineDirectSigner } from "@keplr-wallet/types"
 import { GasPrice } from "@cosmjs/stargate"
+import { coin } from "@cosmjs/amino"
 
 export interface ContractConfig {
     senderAddress: string,
