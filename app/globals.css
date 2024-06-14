@@ -7,9 +7,63 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+
 }
 
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+body{
+  background-color: #91b9b5;
+}
+
+@keyframes spin-rest {
+  0% {
+    transform: rotate(0deg);
+  }
+  45% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spin-rest {
+  animation: spin-rest 4s infinite;
+}
+
+.loader {
+  width: 15px;
+  aspect-ratio: 1;
+  margin-left: 25px;
+  margin-right: 25px;
+  align-self: center;
+  justify-self: center;
+  border-radius: 50%;
+  animation: l5 1s infinite linear alternate;
+}
+
+@keyframes l5 {
+    0%  {box-shadow: 20px 0 #000, -20px 0 #0002;background: #000 }
+    33% {box-shadow: 20px 0 #000, -20px 0 #0002;background: #0002}
+    66% {box-shadow: 20px 0 #0002,-20px 0 #000; background: #0002}
+    100%{box-shadow: 20px 0 #0002,-20px 0 #000; background: #000 }
+}
+
+.loader-white {
+  width: 15px;
+  aspect-ratio: 1;
+  margin-left: 25px;
+  margin-right: 25px;
+  border-radius: 50%;
+  animation: l6 1s infinite linear alternate;
+}
+@keyframes l6 {
+  0%  {box-shadow: 20px 0 #FFF, -20px 0 #FFF2;background: #FFF }
+  33% {box-shadow: 20px 0 #FFF, -20px 0 #FFF2;background: #FFF2}
+  66% {box-shadow: 20px 0 #FFF2,-20px 0 #FFF; background: #FFF2}
+  100%{box-shadow: 20px 0 #FFF2,-20px 0 #FFF; background: #FFF }
 }

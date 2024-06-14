@@ -12,10 +12,11 @@ export interface Market {
 }
 
 export interface Position {
-  id: number;
-  type: string;
-  asset: string;
-  collateral: string;
-  tp: number;
-  maturity: string;
+  asset:string,
+  collateral:string,
+  strikeprice:string,
+  maturity: number
+  type: "Lend"|"Borrow",
+  principle:number,
+  interest:number,
 }

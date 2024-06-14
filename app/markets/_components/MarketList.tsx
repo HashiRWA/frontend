@@ -1,74 +1,105 @@
+"use client"
+
 import Link from "next/link";
 import Image from "next/image";
 import { Market } from "@/types";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { useContext, useEffect, useState } from "react"
+import { BlockChainContext } from "@/context/BlockChainContext";
 
 const MarketList = ({ markets }: { markets: Market[] }) => {
-  return (
-    <div className="mx-auto max-w-[45rem] border border-gray-700">
-      <div className="flex justify-between border-b-2 p-5 text-sm font-bold uppercase">
-        <span className="w-2/4">Pools (Asset / Collateral)</span>
-        <span>Tvl</span>
-        <span>Apr</span>
-        <span>Cdp</span>
-        <span>Maturity</span>
-      </div>
 
-      <div className="divide-y">
-        {markets.map((market, index) => (
-          <div key={index} className="px-5 py-4 text-[0.85rem]">
-            <div className="flex justify-between">
-              <span className="flex w-2/4 items-center gap-1">
-                <Image src="/USDC.svg" alt="" width={24} height={24} />
-                <Image src="/USDC.svg" alt="" width={24} height={24} />
-                {market.asset} / {market.collateral}
-              </span>
-              <span>${market.tvl.toLocaleString("en-US")}</span>
-              <span>{market.apr.toFixed(2)}%</span>
-              <span>{market.cdp.toFixed(2)}%</span>
-              <span>{market.maturity}</span>
-            </div>
+	const [loading,setLoading] = useState<boolean>(false)
 
-            <div className="flex gap-3 py-3 text-[0.8rem]">
-              <div className="flex w-2/4 gap-x-5">
-                <div className="flex flex-col">
-                  <span className="flex justify-between">
-                    Liquidty
-                    <span>{market.liquidity.toLocaleString("en-US")}</span>
-                  </span>
-                  <span className="flex gap-x-3">
-                    Total Volume{" "}
-                    <span>${market.totalVolume.toLocaleString("en-US")}</span>
-                  </span>
-                </div>
-                <div className="flex flex-col">
-                  Transition Price
-                  <span className="flex gap-2 text-xs">
-                    <span className="font-bold">{market.transitionPrice}</span>
-                    {market.asset}/{market.collateral.substring(0, 7)}
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-1 items-center justify-evenly gap-5">
-                <Link
-                  href={`/lend/${market.id}`}
-                  className="flex items-center gap-3 rounded border bg-blue-300 px-8 py-2 font-bold">
-                  <ArrowDown size={20} />
-                  Lend
-                </Link>
-                <Link
-                  href={`/borrow/${market.id}`}
-                  className="flex items-center gap-3 rounded border bg-blue-300 px-8 py-2 font-bold">
-                  <ArrowUp size={20} />
-                  Borrow
-                </Link>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+	const {
+		signer, 
+		pools
+	} = useContext(BlockChainContext)
+
+	console.log(pools)
+	
+	return (
+		<div className="mx-auto w-[90%] flex flex-col items-center  rounded-lg bg-white py-2">
+
+			<div className="flex justify-between border-b p-3 mb-2 text-sm font-medium text-[#374950] uppercase px-8 w-full">
+				<span className="w-2/4">Pools (Asset / Collateral)</span>
+				<span>DIR</span>
+				<span>LIR</span>
+				<span>Cdp</span>
+				<span>Maturity</span>
+			</div>
+
+			{loading&&<div className="loader"></div>}
+
+			<div className="divide-y divide-dashed">
+				{pools.map((market, index) => (
+					<div key={index} className="text-[0.85rem] pt-4 flex flex-col items-center">
+
+						<div className="flex justify-between px-10 w-full">
+
+							<span className="flex w-2/4 items-center gap-1 font-medium">
+								<div className="flex -space-x-2">
+									<Image src="/USDC.svg" alt="" width={30} height={30} />
+									<Image src="/USDC.svg" alt="" width={30} height={30} />
+								</div>
+								{market?.asset?.substring(0,20)} / {market?.collateral?.substring(0,20)}
+							</span>
+
+							<span>{market?.debtinterestrate}%</span>
+							<span>{market?.lendinterestrate}%</span>
+							<span>{market?.overcollateralizationfactor*100}</span>
+							<span>{new Date(market?.maturationdate * 1000).toLocaleDateString()}</span> 
+						</div>
+
+						<div className="flex gap-3 text-[0.8rem] border-[.5px] border-teal-700 w-[95%] my-4 px-5 rounded-md">
+
+							<div className="flex w-2/4 gap-x-5 ">
+								<div className="flex flex-col p-2 rounded-lg w-max">
+									<span className="flex gap-x-3 ">
+										<span className="font-bold">Total Assets:</span>
+										<span>{market?.totalAssets}</span>
+									</span>
+
+									<span className="flex gap-x-3">
+										<span className="font-bold">Total Collateral:</span>
+										<span>${market?.totalCollateral}</span>
+									</span>
+
+									<div className="flex items-center gap-2 ">
+										<span className="font-bold">Strike Price:</span>
+										<span className="flex gap-2 text-xs">
+											<span>{market?.strikeprice}</span>
+											{market?.asset?.substring(0,20)}/{market?.collateral?.substring(0,20)}
+										</span>
+									</div>
+								</div>
+							</div>
+
+
+							<div className="flex flex-1 items-center justify-end gap-5 ">
+								<Link
+									href={`/lend/${market?.id}`}
+									className="flex items-center text-white gap-3 rounded  bg-emerald-800 hover:bg-emerald-900 transition-all duration-150 ease-in-out  px-8 py-2 font-medium"
+								>
+									<ArrowDown size={20} />
+									Lend
+								</Link>
+								<Link
+									href={`/borrow/${market?.id}`}
+									className="flex items-center text-white gap-3 rounded  bg-teal-800 hover:bg-teal-900 transition-all duration-150 ease-in-out  px-8 py-2 font-medium"
+								>
+									<ArrowUp size={20} />
+									Borrow
+								</Link>
+							</div>
+						</div>
+
+					</div>
+				))}
+
+			</div>
+		</div>
+	);
 };
 
 export default MarketList;

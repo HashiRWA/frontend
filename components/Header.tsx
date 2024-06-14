@@ -4,7 +4,8 @@ import { Wallet } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContext } from "react";
-import { AuthContext } from "@/context/AuthContext";
+import { BlockChainContext } from "@/context/BlockChainContext";
+import Image from "next/image";
 
 const links = [
   {
@@ -26,32 +27,46 @@ const Header = () => {
   const isActive = (path: string) =>
     path === pathname || pathname.startsWith(path);
 
-  const { connect, signer } = useContext(AuthContext);
+  const { connect, signer } = useContext(BlockChainContext);
 
   return (
-    <header className="p-5">
-      <nav className="container mx-auto flex items-center justify-between space-x-1 px-6">
-        <div className="rounded-md border px-0.5 py-2 font-bold">
+    <header className="fixed top-0 z-10 m-5 w-[60%] rounded-full bg-transparent bg-white py-1 ring-[0.5px] ring-emerald-900">
+      <nav className="flex items-center justify-between px-8">
+        <Link href="/markets">
+          <Image
+            className="cursor-pointer drop-shadow-md transition-all duration-200 ease-in-out hover:animate-spin hover:drop-shadow-lg"
+            height={40}
+            width={40}
+            src={"/logo.svg"}
+            alt="logo"
+          />
+        </Link>
+
+        <div className="text-md flex items-center gap-4 rounded-md px-0.5 py-2 text-[#374950b1]">
           {links.map((link) => (
             <Link
               key={link.path}
               href={link.path}
-              className={`rounded px-3 py-2 ${
-                isActive(link.path) && "bg-blue-400 text-white"
+              className={`block rounded px-3 py-2 font-semibold decoration-emerald-800 transition duration-150 ease-in-out hover:text-[#374950] ${
+                isActive(link.path) && "text-[#374950] underline"
               } `}>
               {link.name}
             </Link>
           ))}
         </div>
 
-        <div className="flex items-center space-x-4">
-          <button className="size-10 rounded bg-gray-700 px-3 py-2"></button>
-
-          <button
-            onClick={connect}
-            className="flex gap-2 rounded border px-3 py-2">
-            <Wallet />
-          </button>
+        <div className="flex items-center gap-4">
+          {signer ? (
+            <div className="flex gap-2 rounded border px-3 py-2">
+              <Image height={25} width={25} src={"/keplr.png"} alt="logo" />
+            </div>
+          ) : (
+            <button
+              onClick={connect}
+              className="flex gap-2 rounded border px-3 py-2">
+              <Wallet />
+            </button>
+          )}
         </div>
       </nav>
     </header>

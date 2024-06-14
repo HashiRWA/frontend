@@ -23,22 +23,8 @@ const PieChart: React.FC<PieChartProps> = ({ investments }) => {
     datasets: [
       {
         data: data,
-        backgroundColor: [
-          "#FF6384",
-          "#36A2EB",
-          "#FFCE56",
-          "#FF6384",
-          "#36A2EB",
-          "#FFCE56",
-        ],
-        hoverBackgroundColor: [
-          "#FF6384",
-          "#36A2EB",
-          "#FFCE56",
-          "#FF6384",
-          "#36A2EB",
-          "#FFCE56",
-        ],
+        backgroundColor: ["#9BCB90", "#95D2B3", "#55AD9B", "#F1F8E8"],
+        hoverBackgroundColor: ["#A4B8A0", "#5B947A", "#32716A", "#C2D0B7"],
       },
     ],
   };
@@ -48,10 +34,7 @@ const PieChart: React.FC<PieChartProps> = ({ investments }) => {
     maintainAspectRatio: false,
     layout: {
       padding: {
-        left: 20,
-        right: 20,
-        top: 20,
-        bottom: 20,
+        top: 30,
       },
     },
     plugins: {
@@ -82,7 +65,7 @@ const PieChart: React.FC<PieChartProps> = ({ investments }) => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative size-[450px]">
       <Pie data={chartData} options={options} />
     </div>
   );
