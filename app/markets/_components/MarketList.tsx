@@ -6,10 +6,10 @@ import { Market } from "@/types";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { useContext, useEffect, useState } from "react"
 import { BlockChainContext } from "@/context/BlockChainContext";
-import { useContractRead } from "@/hooks/useContractRead";
-import { quoterContract } from "@/contract";
 
 const MarketList = ({ markets }: { markets: Market[] }) => {
+
+	const [loading,setLoading] = useState<boolean>(false)
 
 	const {
 		signer, 
@@ -19,15 +19,17 @@ const MarketList = ({ markets }: { markets: Market[] }) => {
 	console.log(pools)
 	
 	return (
-		<div className="mx-auto w-[90%]  rounded-lg bg-white py-2">
+		<div className="mx-auto w-[90%] flex flex-col items-center  rounded-lg bg-white py-2">
 
-			<div className="flex justify-between border-b p-3 mb-2 text-sm font-medium text-[#374950] uppercase px-8">
+			<div className="flex justify-between border-b p-3 mb-2 text-sm font-medium text-[#374950] uppercase px-8 w-full">
 				<span className="w-2/4">Pools (Asset / Collateral)</span>
 				<span>DIR</span>
 				<span>LIR</span>
 				<span>Cdp</span>
 				<span>Maturity</span>
 			</div>
+
+			{loading&&<div className="loader"></div>}
 
 			<div className="divide-y divide-dashed">
 				{pools.map((market, index) => (

@@ -18,7 +18,7 @@ const links = [
 	},
 	{
 		name: "Mutual Funds",
-		path: "/mutualfunds",
+		path: "/mutual-funds",
 	},
 ];
 
