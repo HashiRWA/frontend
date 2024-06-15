@@ -1,3 +1,4 @@
+import { getTokenDetails } from "@/constants";
 import { Position } from "@/types";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -17,7 +18,7 @@ const PositionList = ({ title, positions }: PositionListProps) => {
   console.log(positions)
 
   return (
-    <div className="rounded-md w-full  text-[#374950]">
+    <div className="rounded-md w-[full]  text-[#374950]">
 
 
       <h3 className="p-3 font-bold">{title}</h3>
@@ -27,7 +28,7 @@ const PositionList = ({ title, positions }: PositionListProps) => {
           <span>Type</span>
           <span >Pools(Assets / collateral)</span>
         </div>
-        <span >Maturity</span>
+        <span>Maturity</span>
       </div>
 
 
@@ -50,20 +51,24 @@ const PositionList = ({ title, positions }: PositionListProps) => {
 
               <div className="flex-1 space-x-2 divide-x-2">
                 <span>
-                  {position?.asset?.substring(0,10)} / {position.collateral?.substring(0,10)}
+                  {/* use symbols */}
+                  {getTokenDetails(position.asset)?.symbol} / {getTokenDetails(position.collateral)?.symbol}
                 </span>
                 <span className="px-3 text-xs font-medium">
-                  SP: {""}
+                  Strike: {""}
                   <span className="text-xs">
-                    {position?.strikeprice} {position.collateral?.substring(0,10)} / {position.asset?.substring(0,10)}
+                    {position.strikeprice} {getTokenDetails(position.collateral)?.symbol} /  {getTokenDetails(position.asset)?.symbol}
                   </span>
                 </span>
+                <span className="px-3 text-xs font-medium">
+                  OCF: {""}
+                  <span className="text-xs">
+                    {position.strikeprice} {getTokenDetails(position.collateral)?.symbol} /  {getTokenDetails(position.asset)?.symbol}
+                  </span>
+                </span>
+                
               </div>
-
-
               <span className="text-sm font-semibold">{new Date(position?.maturity * 1000).toLocaleDateString()}</span>
-
-
               <div className="grid size-5 place-items-center">
                 <ChevronRight size={15} />
               </div>
