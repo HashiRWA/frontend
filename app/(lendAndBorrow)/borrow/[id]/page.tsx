@@ -33,6 +33,8 @@ const BorrowPage = () => {
 
 
       <div className="rounded-md p-4">
+
+
         <div className="flex gap-2 pb-3">
           <Image src="/USDC.svg" alt="" width={24} height={24} />
           <h3 className="text-lg font-bold">

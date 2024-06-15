@@ -13,23 +13,29 @@ export type BlockChainContext ={
 	signer: (OfflineAminoSigner & OfflineDirectSigner) | undefined,
 	pools: any[],
 	positions:any[],
-	loading:boolean
+	loading:boolean,
 	
 	
 	connect:() => Promise<Key | undefined>,
 	lend: (market: any,amount:string) => Promise<{
 		transferData: any;
 		depositData: any;
-	} | undefined>
+	} | undefined>,
 	borrow: (market:string,amount:string,asset_addr:string,collateral_addr:string) => Promise<{
 		borrowData: any;
-	} | undefined>
+	} | undefined>,
 	withdraw: (contractAddress: string, amount: string) => Promise<{
 		closeLendData: any;
-	} | undefined>
+	} | undefined>,
+	repay: (contractAddress: string, amount: string, asset_addr: string, collateral_addr: string,principle:string) => Promise<{
+		repayDebtData: any;
+	} | undefined>,
+	getRepayQuotation: (market: string) => Promise<{
+		quoteData: any;
+	} | undefined>,
 	withdrawInterest: (contractAddress: string) => Promise<{
 		closeLendData: any;
-	} | undefined>
+	} | undefined>,
 	
 }
 
@@ -213,6 +219,49 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		
 	}
 
+	const getRepayQuotation = async(market:string) =>{
+		setLoading(true)
+
+		if(!signer){
+			console.log("No Wallet Connected")
+			setLoading(false)
+			return
+		}
+
+		if(!address){
+			console.log("No Wallet Connected")
+			setLoading(false)
+			return
+		}
+
+		const {data:quoteData,error:quoteError} = await useContractRead({
+			contractAddress:market,
+			query:{
+				getRepayQuote:{
+					user: address,
+				}
+			},
+			signer
+		})
+
+		console.log(quoteData,"quoteData")
+
+		if(quoteError){
+			console.log(
+				"quoteError",quoteError,
+			)
+
+			setLoading(false)
+
+			return undefined
+		}
+
+		setLoading(false)
+
+		return {
+			quoteData
+		}
+	}
 	const lend = async(market:any,amount:string) =>{
 
 		setLoading(true)
@@ -348,9 +397,67 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		}
 	}
 
+	const repay = async(contractAddress:string,amount:string,asset_addr:string,collateral_addr:string,principle:string) => {
 
-	const repay = async() =>{
+		setLoading(true)
+
+		if(!signer){
+			console.log("Please connect wallet")
+			setLoading(false)
+			return undefined
+		}
+
 		
+
+		const {data:repayApprovalData,error:repayApprovalError} = await useContractWrite({
+			senderAddress:address,
+			contractAddress: collateral_addr,
+			args:{
+				increase_allowance:{
+					spender: contractAddress,
+					amount: amount,
+				}
+			},
+			signer
+		})
+
+		console.log("asset_principle",principle)
+
+		const {data:repayDebtData,error:repayDebtError} = await useContractWrite({
+			senderAddress:address,
+			contractAddress: contractAddress,
+			args:{
+				transact:{
+					repay:{
+						asset_denom: asset_addr,
+						asset_principle: principle,
+						collateral_denom: collateral_addr,
+					}
+				}
+			},
+			signer
+		})
+
+		if(repayDebtError||repayApprovalError){
+
+			console.log(
+				"repayDebtError",repayDebtError,
+				"repayApprovalError",repayApprovalError
+			)
+
+			setLoading(false)
+			return undefined
+		}
+
+		console.log(
+			"repayDebtData",repayDebtData,
+		)
+
+		setLoading(false)
+
+		return{
+			repayDebtData:repayDebtData.res,
+		}
 	}
 
 	const withdraw = async(contractAddress:string,amount:string) => {
@@ -443,13 +550,11 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		}
 	}
 
-
-
 	useEffect(()=>{
 		(async()=>{
 			setLoading(true)
 			let pool;
-			pool = await getPools("mantra16zcqaswsvp2zv29wll2jzx7j67vwlm9qvdlp372467l5h2ddaqnsrreum6","mantra16zcqaswsvp2zv29wll2jzx7j67vwlm9qvdlp372467l5h2ddaqnsrreum6")
+			pool = await getPools("mantra19pnf44x3fjg2wzw6qz29eqd3jfz0wuxl7smuz50wd4thntytnq8qhmmc34","mantra19pnf44x3fjg2wzw6qz29eqd3jfz0wuxl7smuz50wd4thntytnq8qhmmc34")
 			if(pool){
 				setPools([
 					pool
@@ -459,29 +564,32 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		})()
 	},[signer])
 
-
 	useEffect(()=>{
 		(async()=>{
 			setLoading(true)
+			let positionData:any[] = [];
 			pools.forEach(async(market)=>{
-				const data = await getPositions(market)
+				const data = await getPositions(market);
 				if(data){	
 					if(data?.withdrawablePositions[0]!=0||data?.withdrawablePositions[1]!=0)
-						setPositions([...positions,{
-							id:`${market?.asset}_${market?.collateral}_${market?.maturationdat}_LEND`,
-							asset:market?.asset,
-							market:market.id,
-							collateral:market?.collateral,
-							strikeprice:market?.strikeprice,
-							maturity: market?.maturationdate,
-							type: "Lend",
-							principle:data?.withdrawablePositions[0],
-							interest:data?.withdrawablePositions[1],
-						}])
+						positionData = [
+							...positionData,{
+								id:`${market?.asset}_${market?.collateral}_${market?.maturationdat}_LEND`,
+								asset:market?.asset,
+								market:market.id,
+								collateral:market?.collateral,
+								strikeprice:market?.strikeprice,
+								maturity: market?.maturationdate,
+								type: "Lend",
+								principle:data?.withdrawablePositions[0],
+								interest:data?.withdrawablePositions[1],
+							}
+						]
 
 
-						if(data?.repayablePositions[0]!=0)
-							setPositions([...positions,{
+					if(data?.repayablePositions[0]!=0)
+						positionData = [
+							...positionData,{
 								id:`${market?.asset}_${market?.collateral}_${market?.maturationdat}_BORROW`,
 								asset:market?.asset,
 								market:market.id,
@@ -489,22 +597,15 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 								maturity: market?.maturationdate,
 								type: "Borrow",
 								interest:data?.withdrawablePositions[1],
-							}])
-
-					// positionsData.push({
-					// 	asset:market?.asset,
-					// 	collateral:market?.collateral,
-					// 	strikeprice:market?.strikeprice,
-					// 	maturity: market?.maturationdate,
-					// 	type: "BORROW"
-					// })
+							}
+						]
 				}
+
+				setPositions(positionData)
 			})
 			setLoading(false)
 		})()
 	},[pools])
-
-	
 
 	return (
 		<BlockChainContext.Provider value={{
@@ -516,7 +617,9 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			connect,
 			lend,
 			borrow,
+			repay,
 			withdraw,
+			getRepayQuotation,
 			withdrawInterest
 		}}>
 			{children}

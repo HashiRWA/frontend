@@ -36,18 +36,12 @@ const LendPositionPage = () => {
         <div className="flex justify-between rounded-md border border-emerald-700 p-3">
             <div className="space-y-2 text-sm">
               <span>Amount at Maturity</span>
+
               <div className="space-x-5 font-semibold">
-                <span>
-                  {position?.asset?.substring(0,10)}
-                </span>
-                <span className="uppercase">Or</span>
-                <span>
-                  {position?.collateral?.substring(0,10)}
-                </span>
+                  
               </div>
-
-
             </div>
+
             <div className="flex gap-5 items-center">
               <div>
                 <input 
@@ -59,6 +53,8 @@ const LendPositionPage = () => {
                   max={position?.principle} 
                 />
               </div>
+
+
               <button
                 onClick={()=>{
                   if(amount!>position?.principle){
@@ -75,6 +71,7 @@ const LendPositionPage = () => {
                 className={`h-full rounded-md px-4 bg-slate-600 hover:bg-slate-500 transition-all duration-150 ease-in-out font-semibold ${!isMatured ? "bg-gray-400 text-gray-200" : "bg-blue-200"} cursor-pointer`}>
                 Withdraw Interest
               </button>
+
             </div>
         </div>
     </div>

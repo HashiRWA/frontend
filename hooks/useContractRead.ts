@@ -63,6 +63,7 @@ export async function useContractRead({
 		}
 
 	}
+	
 	catch(error:unknown){
 
 		return {
