@@ -6,6 +6,7 @@ import { Market } from "@/types";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { useContext, useEffect, useState } from "react"
 import { BlockChainContext } from "@/context/BlockChainContext";
+import { getTokenDetails } from "@/constants";
 
 const MarketList = ({ markets }: { markets: Market[] }) => {
 
@@ -13,16 +14,15 @@ const MarketList = ({ markets }: { markets: Market[] }) => {
 		pools,
 		loading
 	} = useContext(BlockChainContext)
-
 	
 	return (
 		<div className="mx-auto w-[90%] flex flex-col items-center  rounded-lg bg-white py-2">
 
 			<div className="flex justify-between border-b p-3 mb-2 text-sm font-medium text-[#374950] uppercase px-8 w-full">
-				<span className="w-2/4">Pools (Asset / Collateral)</span>
-				<span>DIR</span>
-				<span>LIR</span>
-				<span>Cdp</span>
+				<span className="w-2/4">Markets (Asset / Collateral)</span>
+				<span>Deposit Interest Rate</span>
+				<span>Debt Interest Rate</span>
+				<span>CDP</span>
 				<span>Maturity</span>
 			</div>
 
@@ -39,7 +39,7 @@ const MarketList = ({ markets }: { markets: Market[] }) => {
 									<Image src="/USDC.svg" alt="" width={30} height={30} />
 									<Image src="/USDC.svg" alt="" width={30} height={30} />
 								</div>
-								{market?.asset?.substring(0,20)} / {market?.collateral?.substring(0,20)}
+								{getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)} / {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}
 							</span>
 
 							<span>{market?.debtinterestrate}%</span>
@@ -54,19 +54,19 @@ const MarketList = ({ markets }: { markets: Market[] }) => {
 								<div className="flex flex-col p-2 rounded-lg w-max">
 									<span className="flex gap-x-3 ">
 										<span className="font-bold">Total Assets:</span>
-										<span>{market?.totalAssets}</span>
+										<span>{Number(market?.totalAssets) / (10 ** getTokenDetails(market?.asset).decimals  ) } {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)}</span>
 									</span>
 
 									<span className="flex gap-x-3">
 										<span className="font-bold">Total Collateral:</span>
-										<span>${market?.totalCollateral}</span>
+										<span>{Number(market?.totalCollateral) / (10 ** getTokenDetails(market?.collateral).decimals  ) } {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}</span>
 									</span>
 
 									<div className="flex items-center gap-2 ">
 										<span className="font-bold">Strike Price:</span>
 										<span className="flex gap-2 text-xs">
 											<span>{market?.strikeprice}</span>
-											{market?.asset?.substring(0,20)}/{market?.collateral?.substring(0,20)}
+											<span>{getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)} / {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)} </span>
 										</span>
 									</div>
 								</div>
