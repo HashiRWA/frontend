@@ -65,7 +65,7 @@ const PieChart: React.FC<PieChartProps> = ({ investments }) => {
   };
 
   return (
-    <div className="relative size-[450px] w-full rounded-lg bg-white">
+    <div className="relative h-[465px] w-full rounded-lg bg-white shadow-xl">
       <Pie data={chartData} options={options} />
     </div>
   );

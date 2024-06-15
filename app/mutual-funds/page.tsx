@@ -14,7 +14,7 @@ const MutualFundPage = () => {
           {mutualFunds.map((fund) => (
             <Link
               href={`/mutual-funds/${fund.id}`}
-              className="grid grid-cols-3 items-center justify-items-center gap-14 rounded-md border border-emerald-800 p-4 transition-all duration-150 ease-in-out hover:bg-slate-200"
+              className="grid grid-cols-3 items-center justify-items-center gap-14 rounded-md border border-emerald-800 p-4 transition-all duration-150 ease-in-out hover:bg-[#c5e4e7]/60"
               key={fund.id}>
               <div className="justify-self-start">
                 <span>{fund.name}</span>

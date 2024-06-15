@@ -26,7 +26,7 @@ const Profile = ({ details, investments }: ProfileProps) => {
 
   return (
     <div className="flex h-max items-center justify-center gap-5">
-      <div className="grid h-full w-full grid-cols-1 gap-6 rounded-lg bg-white px-10 py-11">
+      <div className="grid h-full w-full grid-cols-1 gap-6 rounded-lg bg-white px-10 py-11 shadow-xl">
         <div className="justify-self-start">
           <Image
             src={image}

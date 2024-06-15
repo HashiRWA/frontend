@@ -15,12 +15,12 @@ const MutualFundPage = () => {
   const mutualFund = mutualFunds.find((fund) => fund.id === Number(id));
 
   return (
-    <div className="mb-3 mt-28 w-[70%] space-y-5 text-[#374950]">
+    <div className="mb-3 mt-28 w-[70%] space-y-5 pb-6 text-[#374950]">
       <Profile
         details={mutualFund?.profile}
         investments={mutualFund?.investmentTypes}
       />
-      <div className="grid grid-cols-2 gap-x-5 rounded-lg bg-white px-3 py-8">
+      <div className="grid grid-cols-2 gap-x-5 rounded-lg bg-white px-3 py-8 shadow-xl">
         <div className="gap-4 space-y-4 px-4">
           <h1 className="px-2 text-4xl font-bold">{mutualFund?.name}</h1>
 
