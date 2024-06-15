@@ -17,8 +17,8 @@ const LendPage = () => {
 
   const { id } = useParams();
   const [amount,setAmount] = useState<string>()
-  const {pools, lend} = useContext(BlockChainContext)
-  const market = pools.find((market) => market.id === Number(id));
+  const {pools, lend, loading} = useContext(BlockChainContext)
+  const market = pools.find((market) => market.id === id);
 
   return (
     <div className="mx-auto w-[60%] p-6 rounded-lg bg-white mt-48 text-[#374950]">
@@ -30,6 +30,7 @@ const LendPage = () => {
         </Link>
       </div>
 
+      {loading&&<div className="loader"></div>}
 
       <div className="rounded-md  p-4">
 
@@ -134,7 +135,7 @@ const LendPage = () => {
 
             
             <div>
-              <button onClick={()=>lend("",amount!)} className="w-full  py-2 text-center text-[14px] font-semibold text-white gap-3 rounded  bg-teal-800 hover:bg-teal-900 transition-all duration-150 ease-in-out  px-8">
+              <button onClick={()=>lend(id,amount!)} className="w-full  py-2 text-center text-[14px] font-semibold text-white gap-3 rounded  bg-teal-800 hover:bg-teal-900 transition-all duration-150 ease-in-out  px-8">
                 Lend
               </button>
             </div>

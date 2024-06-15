@@ -24,11 +24,13 @@ function dividePositions(positions: Position[]) {
 
 const PositionsPage = () => {
 
-	const {positions} = useContext(BlockChainContext)
+	const {positions,loading} = useContext(BlockChainContext)
 	const {active,matured} = dividePositions(positions)
 
 	return (
-		<div className="mx-auto py-4  my-28 w-[90%]  rounded-lg bg-white ">
+		<div className="mx-auto py-4  my-28 w-[90%] flex flex-col items-center  rounded-lg bg-white ">
+			{loading&&<div className="loader"></div>}
+
 			<div className="space-y-8 w-full px-4">
 				<PositionList title="Active" positions={active} />
 				<PositionList title="Matured" positions={matured} />

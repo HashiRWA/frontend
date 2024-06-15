@@ -9,14 +9,11 @@ import { BlockChainContext } from "@/context/BlockChainContext";
 
 const MarketList = ({ markets }: { markets: Market[] }) => {
 
-	const [loading,setLoading] = useState<boolean>(false)
-
 	const {
-		signer, 
-		pools
+		pools,
+		loading
 	} = useContext(BlockChainContext)
 
-	console.log(pools)
 	
 	return (
 		<div className="mx-auto w-[90%] flex flex-col items-center  rounded-lg bg-white py-2">
@@ -31,7 +28,7 @@ const MarketList = ({ markets }: { markets: Market[] }) => {
 
 			{loading&&<div className="loader"></div>}
 
-			<div className="divide-y divide-dashed">
+			<div className="divide-y divide-dashed w-full">
 				{pools.map((market, index) => (
 					<div key={index} className="text-[0.85rem] pt-4 flex flex-col items-center">
 

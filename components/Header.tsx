@@ -29,7 +29,7 @@ const Header = () => {
 	const {connect,signer} = useContext(BlockChainContext)
 
 	return (
-		<header className="fixed top-0 w-[60%] m-5 bg-white rounded-full bg-transparent z-10 py-1">
+		<header className="fixed top-0 w-[60%] m-5 bg-white rounded-full bg-transparent z-10 py-1 shadow-lg">
 
 			<nav className="flex justify-between items-center px-8">
 
@@ -57,6 +57,7 @@ const Header = () => {
 						</Link>
 					))}
 				</div>
+
 
 				<div className="flex items-center gap-4">
 					{
