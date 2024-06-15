@@ -12,6 +12,7 @@ export interface Market {
 }
 
 export interface Position {
+  id:string,
   asset:string,
   collateral:string,
   strikeprice:string,

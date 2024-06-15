@@ -3,9 +3,9 @@
 import { createContext, useState, useCallback, useEffect } from "react"
 import { Keplr,Key,OfflineAminoSigner,OfflineDirectSigner} from '@keplr-wallet/types';
 import { useChain } from "../hooks/useChain";
-import { quoterContract } from "@/contract";
 import { useContractRead } from "@/hooks/useContractRead";
 import { useContractWrite } from "@/hooks/useContractWrite";
+import { useGiveApproval } from "@/hooks/useGiveApproval";
 
 
 export type BlockChainContext ={
@@ -13,12 +13,22 @@ export type BlockChainContext ={
 	signer: (OfflineAminoSigner & OfflineDirectSigner) | undefined,
 	pools: any[],
 	positions:any[],
+	loading:boolean
 	
 	
 	connect:() => Promise<Key | undefined>,
 	lend: (market: any,amount:string) => Promise<{
 		transferData: any;
 		depositData: any;
+	} | undefined>
+	borrow: (market:string,amount:string,asset_addr:string,collateral_addr:string) => Promise<{
+		borrowData: any;
+	} | undefined>
+	withdraw: (contractAddress: string, amount: string) => Promise<{
+		closeLendData: any;
+	} | undefined>
+	withdrawInterest: (contractAddress: string) => Promise<{
+		closeLendData: any;
 	} | undefined>
 	
 }
@@ -41,6 +51,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 
 	const [pools,setPools] = useState<any[]>([])
 	const [positions,setPositions] = useState<any[]>([])
+	const [loading, setLoading] = useState<boolean>(false)
 
 
 	const _get_keplr = async ():Promise<Keplr|undefined> => {
@@ -68,7 +79,6 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		})
 	}
 
-
 	const connect = async ():Promise<Key|undefined> => {
 
 		const keplr =  await _get_keplr()
@@ -93,8 +103,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		return account
 	}
 
-
-	const getPools = async (address:string,id:number) => {
+	const getPools = async (contractAddress:string,id:string) => {
 
 		if(!signer){
 			console.log("Please connect wallet")
@@ -102,7 +111,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		}
 
 		const {data:poolConfig,error:poolConfigError} = await useContractRead({
-			contractAddress: quoterContract.address,
+			contractAddress: contractAddress,
 			query:{
 				poolConfig:{}
 			},
@@ -110,7 +119,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		})
 
 		const {data:totalAssets,error:totalAssetsError} = await useContractRead({
-			contractAddress: quoterContract.address,
+			contractAddress: contractAddress,
 			query:{
 				getTotalAssetAvailable:{}
 			},
@@ -118,7 +127,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		})
 
 		const {data:totalCollateral,error:totalCollateralError} = await useContractRead({
-			contractAddress: quoterContract.address,
+			contractAddress: contractAddress,
 			query:{
 				getTotalCollateralAvailable:{}
 			},
@@ -146,8 +155,8 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		return pool
 	}
 
-
 	const getPositions = async (market:any) => {
+		
 
 		if(!signer){
 			console.log("Please connect wallet")
@@ -160,7 +169,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		}
 
 		const {data:withdrawablePositions,error:withdrawablePositionsError} = await useContractRead({
-			contractAddress: quoterContract.address,
+			contractAddress: market.id,
 			query:{
 				getWithdrawablePositions:{
 					user:address
@@ -170,7 +179,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		})
 
 		const {data:repayablePositions,error:repayablePositionsError} = await useContractRead({
-			contractAddress: quoterContract.address,
+			contractAddress: market.id,
 			query:{
 				getTotalAssetAvailable:{
 					user:address
@@ -206,31 +215,30 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 
 	const lend = async(market:any,amount:string) =>{
 
+		setLoading(true)
+
 		if(!signer){
 			console.log("No Wallet Connected")
+			setLoading(false)
 			return
 		}
 
 		if(!address){
 			console.log("No Wallet Connected")
+			setLoading(false)
 			return
 		}
 
-		const {data:transferData,error:transferError} = await useContractWrite({
+
+		const {data:transferData,error:transferError} = await useGiveApproval({
 			senderAddress:address,
-			contractAddress:"mantra1c0wehfltspqczqmgv86nn0asf5jstld0yvqzzjtsavsn7pgzakusqa77lj",
-			args: { 
-				transfer:{ 
-					amount,
-					recipient:quoterContract.address
-				}
-			},
-			signer
+			contractAddress:market,
+			signer,
 		})
 
 		const {data:depositData,error:depositError} = await useContractWrite({
 			senderAddress:address,
-			contractAddress:quoterContract.address,
+			contractAddress:market,
 			args: { 
 				transact:{
 					deposit:{
@@ -247,8 +255,11 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 				"transferError",transferError,
 				"depositError",depositError
 			)
+			setLoading(false)
 			return undefined
 		}
+
+		setLoading(false)
 
 		return {
 			transferData,
@@ -256,38 +267,229 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		}
 	}
 
+	const borrow = async(market:string,amount:string,asset_addr:string,collateral_addr:string) =>{
+		setLoading(true)
+
+		if(!signer){
+			console.log("No Wallet Connected")
+			setLoading(false)
+			return
+		}
+
+		if(!address){
+			console.log("No Wallet Connected")
+			setLoading(false)
+			return
+		}
+
+		const {data:quoteData,error:quoteError} = await useContractRead({
+			contractAddress:market,
+			query:{
+				getLoanQuote:{
+					amount: amount,
+				}
+			},
+			signer
+		})
+
+		console.log(quoteData,"quoteData")
+
+		
+
+		const {data:approvalData,error:approvalError} = await useContractWrite({
+			senderAddress:address,
+			contractAddress:collateral_addr,
+			args:{
+				increase_allowance:{
+					spender: market,
+					amount:quoteData?.res?.[2],
+				}
+			},
+			signer
+		})
+
+		console.log(approvalData,"approvalData")
+
+
+		const {data:borrowData,error:borrowError} = await useContractWrite({
+			senderAddress:address,
+			contractAddress:market,
+			args: { 
+				transact:{
+					loan:{
+						asset_denom: asset_addr,
+						asset_amount : amount,
+						collateral_denom: collateral_addr,
+					}
+				}
+			},
+			signer
+		})
+
+
+		if(borrowError||approvalError||quoteError){
+			console.log(
+				"borrowError",borrowError,
+				"approvalError",approvalError,
+				"quoteError",quoteError,
+			)
+
+			setLoading(false)
+
+			return undefined
+		}
+
+		setLoading(false)
+
+		return {
+			borrowData,
+			approvalData,
+			quoteData
+		}
+	}
+
+
+	const repay = async() =>{
+		
+	}
+
+	const withdraw = async(contractAddress:string,amount:string) => {
+
+		setLoading(true)
+
+		if(!signer){
+			console.log("Please connect wallet")
+			setLoading(false)
+			return undefined
+		}
+
+		console.log(contractAddress,amount)
+
+		const {data:closeLendData,error:closeLendError} = await useContractWrite({
+			senderAddress:address,
+			contractAddress: contractAddress,
+			args:{
+				transact:{
+					withdraw:{
+						denom:"mantra1c0wehfltspqczqmgv86nn0asf5jstld0yvqzzjtsavsn7pgzakusqa77lj",
+						amount: amount,
+					}
+				}
+			},
+			signer
+		})
+
+		if(closeLendError){
+
+			console.log(
+				"closeLendError",closeLendError,
+			)
+
+			setLoading(false)
+			return undefined
+		}
+
+		console.log(
+			"closeLendData",closeLendData,
+		)
+
+		setLoading(false)
+
+		return{
+			closeLendData:closeLendData.res,
+		}
+	}
+
+	const withdrawInterest = async(contractAddress:string) => {
+
+		setLoading(true)
+
+		if(!signer){
+			console.log("Please connect wallet")
+			setLoading(false)
+			return undefined
+		}
+
+
+		const {data:closeLendData,error:closeLendError} = await useContractWrite({
+			senderAddress:address,
+			contractAddress: contractAddress,
+			args:{
+				transact:{
+					withdrawInterest:{}
+				}
+			},
+			signer
+		})
+
+		if(closeLendError){
+
+			console.log(
+				"closeLendError",closeLendError,
+			)
+
+			setLoading(false)
+			return undefined
+		}
+
+		console.log(
+			"closeLendData",closeLendData,
+		)
+
+		setLoading(false)
+
+		return{
+			closeLendData:closeLendData.res,
+		}
+	}
+
+
 
 	useEffect(()=>{
 		(async()=>{
+			setLoading(true)
 			let pool;
-			pool = await getPools("",0)
+			pool = await getPools("mantra16zcqaswsvp2zv29wll2jzx7j67vwlm9qvdlp372467l5h2ddaqnsrreum6","mantra16zcqaswsvp2zv29wll2jzx7j67vwlm9qvdlp372467l5h2ddaqnsrreum6")
 			if(pool){
 				setPools([
 					pool
 				])
 			}
+			setLoading(false)
 		})()
 	},[signer])
 
 
 	useEffect(()=>{
 		(async()=>{
-			let positionsData:any[] = []
-			pools.forEach(async(market,index)=>{
+			setLoading(true)
+			pools.forEach(async(market)=>{
 				const data = await getPositions(market)
 				if(data){	
-					if(data.repayablePositions[0]!=='0'||data.repayablePositions[1]!=='0')
-						positionsData.push({
-							id:index,
+					if(data?.withdrawablePositions[0]!=0||data?.withdrawablePositions[1]!=0)
+						setPositions([...positions,{
+							id:`${market?.asset}_${market?.collateral}_${market?.maturationdat}_LEND`,
 							asset:market?.asset,
+							market:market.id,
 							collateral:market?.collateral,
 							strikeprice:market?.strikeprice,
 							maturity: market?.maturationdate,
 							type: "Lend",
-							principle:data.repayablePositions[0],
-							interest:data.repayablePositions[1],
-						})
+							principle:data?.withdrawablePositions[0],
+							interest:data?.withdrawablePositions[1],
+						}])
 
+
+						if(data?.repayablePositions[0]!=0)
+							setPositions([...positions,{
+								id:`${market?.asset}_${market?.collateral}_${market?.maturationdat}_BORROW`,
+								asset:market?.asset,
+								market:market.id,
+								collateral:market?.collateral,
+								maturity: market?.maturationdate,
+								type: "Borrow",
+								interest:data?.withdrawablePositions[1],
+							}])
 
 					// positionsData.push({
 					// 	asset:market?.asset,
@@ -298,8 +500,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 					// })
 				}
 			})
-
-			setPositions(positionsData)
+			setLoading(false)
 		})()
 	},[pools])
 
@@ -311,9 +512,12 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			signer,
 			pools,
 			positions,
-
+			loading,
 			connect,
-			lend
+			lend,
+			borrow,
+			withdraw,
+			withdrawInterest
 		}}>
 			{children}
 		</BlockChainContext.Provider>

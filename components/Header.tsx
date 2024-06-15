@@ -30,7 +30,7 @@ const Header = () => {
   const { connect, signer } = useContext(BlockChainContext);
 
   return (
-    <header className="fixed top-0 z-10 m-5 w-[60%] rounded-full bg-transparent bg-white py-1 ring-[0.5px] ring-emerald-900">
+    <header className="fixed top-0 z-10 m-5 w-[60%] rounded-full bg-transparent bg-white py-1 shadow-lg">
       <nav className="flex items-center justify-between px-8">
         <Link href="/markets">
           <Image
@@ -47,8 +47,8 @@ const Header = () => {
             <Link
               key={link.path}
               href={link.path}
-              className={`block rounded px-3 py-2 font-semibold decoration-emerald-800 transition duration-150 ease-in-out hover:text-[#374950] ${
-                isActive(link.path) && "text-[#374950] underline"
+              className={`rounded px-3 py-2 transition-all duration-150 ease-in-out hover:text-[#374950] ${
+                isActive(link.path) && "text-[#374950]"
               } `}>
               {link.name}
             </Link>

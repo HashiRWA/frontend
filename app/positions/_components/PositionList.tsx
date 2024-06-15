@@ -32,11 +32,11 @@ const PositionList = ({ title, positions }: PositionListProps) => {
 
 
       <div className="divide-y py-2 flex flex-col gap-2 mt-2">
-        {positions?.map((position, index) => (
+        {positions?.map((position,index) => (
           <Link 
+            key={index}
             className="cursor-pointer"
-            href={`/positions/${position.type.toLocaleLowerCase()}/${index}`}
-            key={index} 
+            href={`/positions/${position.type.toLocaleLowerCase()}/${position?.id}`}
           >
 
             <div  className="flex items-center justify-between gap-4 p-2  border border-emerald-800 rounded-md ">
