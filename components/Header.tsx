@@ -26,13 +26,12 @@ const Header = () => {
 	const pathname = usePathname();
 	const isActive = (path: string) => path === pathname || pathname.startsWith(path);
 
-	const {connect,signer} = useContext(BlockChainContext)
+	const {connect,signer, address} = useContext(BlockChainContext)
 
 	return (
-		<header className="fixed top-0 w-[60%] m-5 bg-white rounded-full bg-transparent z-10 py-1 shadow-lg">
+		<header className="fixed top-0 w-[80%] m-5 bg-white rounded-full bg-transparent z-10 py-1 shadow-lg">
 
 			<nav className="flex justify-between items-center px-8">
-
 
 				<Link href="/markets">
 					<Image
@@ -65,6 +64,9 @@ const Header = () => {
 						<div 
 							className="rounded flex gap-2 border px-3 py-2"
 						>
+							<div> 
+								{address?.slice(0,6)}...{address?.slice(-4)}
+							</div>
 							<Image
 								height={25}
 								width={25}
@@ -77,6 +79,9 @@ const Header = () => {
 							onClick={connect}
 							className="rounded flex gap-2 border px-3 py-2"
 						>
+							<div> 
+								Connect Wallet
+							</div>
 							<Wallet />
 						</button>
 					}
