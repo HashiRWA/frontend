@@ -127,7 +127,7 @@ const BorrowPage = () => {
               </div>
             </div>
             <div>
-              <button onClick={()=>borrow(market?.id,amount!)} className="w-full  py-2 text-center text-[14px] font-semibold text-white gap-3 rounded  bg-teal-800 hover:bg-teal-900 transition-all duration-150 ease-in-out  px-8">
+              <button onClick={()=>borrow(market?.id,amount!,market?.asset,market?.collateral)} className="w-full  py-2 text-center text-[14px] font-semibold text-white gap-3 rounded  bg-teal-800 hover:bg-teal-900 transition-all duration-150 ease-in-out  px-8">
                 Borrow
               </button>
             </div>

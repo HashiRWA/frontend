@@ -21,7 +21,7 @@ export type BlockChainContext ={
 		transferData: any;
 		depositData: any;
 	} | undefined>
-	borrow: (market: string, amount: string) => Promise<{
+	borrow: (market:string,amount:string,asset_addr:string,collateral_addr:string) => Promise<{
 		borrowData: any;
 	} | undefined>
 	withdraw: (contractAddress: string, amount: string) => Promise<{
@@ -267,7 +267,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		}
 	}
 
-	const borrow = async(market:string,amount:string) =>{
+	const borrow = async(market:string,amount:string,asset_addr:string,collateral_addr:string) =>{
 		setLoading(true)
 
 		if(!signer){
@@ -282,31 +282,60 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			return
 		}
 
-		const {data:transferData,error:transferError} = await useGiveApproval({
-			senderAddress:address,
+		const {data:quoteData,error:quoteError} = await useContractRead({
 			contractAddress:market,
-			signer,
+			query:{
+				getLoanQuote:{
+					amount: amount,
+				}
+			},
+			signer
 		})
+
+		console.log(quoteData,"quoteData")
+
+		
+
+		const {data:approvalData,error:approvalError} = await useContractWrite({
+			senderAddress:address,
+			contractAddress:collateral_addr,
+			args:{
+				increase_allowance:{
+					spender: market,
+					amount:quoteData?.res?.[2],
+				}
+			},
+			signer
+		})
+
+		console.log(approvalData,"approvalData")
+
 
 		const {data:borrowData,error:borrowError} = await useContractWrite({
 			senderAddress:address,
 			contractAddress:market,
 			args: { 
 				transact:{
-					borrow:{
-						amount,
+					loan:{
+						asset_denom: asset_addr,
+						asset_amount : amount,
+						collateral_denom: collateral_addr,
 					}
 				}
 			},
 			signer
 		})
 
-		if(borrowError){
+
+		if(borrowError||approvalError||quoteError){
 			console.log(
 				"borrowError",borrowError,
-				"transferError",transferError
+				"approvalError",approvalError,
+				"quoteError",quoteError,
 			)
+
 			setLoading(false)
+
 			return undefined
 		}
 
@@ -314,8 +343,14 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 
 		return {
 			borrowData,
-			transferData
+			approvalData,
+			quoteData
 		}
+	}
+
+
+	const repay = async() =>{
+		
 	}
 
 	const withdraw = async(contractAddress:string,amount:string) => {
@@ -381,8 +416,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			contractAddress: contractAddress,
 			args:{
 				transact:{
-					withdrawInterest:{
-					}
+					withdrawInterest:{}
 				}
 			},
 			signer
@@ -415,7 +449,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		(async()=>{
 			setLoading(true)
 			let pool;
-			pool = await getPools("mantra1pcpdl0kts7djtwwyyx5pn0xpg2t7husy3jmxxhc26tnlk7qc4rvqrgqj47","mantra1pcpdl0kts7djtwwyyx5pn0xpg2t7husy3jmxxhc26tnlk7qc4rvqrgqj47")
+			pool = await getPools("mantra16zcqaswsvp2zv29wll2jzx7j67vwlm9qvdlp372467l5h2ddaqnsrreum6","mantra16zcqaswsvp2zv29wll2jzx7j67vwlm9qvdlp372467l5h2ddaqnsrreum6")
 			if(pool){
 				setPools([
 					pool
@@ -432,7 +466,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			pools.forEach(async(market)=>{
 				const data = await getPositions(market)
 				if(data){	
-					if(data.repayablePositions[0]!=='0'||data.repayablePositions[1]!=='0')
+					if(data?.withdrawablePositions[0]!=0||data?.withdrawablePositions[1]!=0)
 						setPositions([...positions,{
 							id:`${market?.asset}_${market?.collateral}_${market?.maturationdat}_LEND`,
 							asset:market?.asset,
@@ -441,9 +475,21 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 							strikeprice:market?.strikeprice,
 							maturity: market?.maturationdate,
 							type: "Lend",
-							principle:data.repayablePositions[0],
-							interest:data.repayablePositions[1],
+							principle:data?.withdrawablePositions[0],
+							interest:data?.withdrawablePositions[1],
 						}])
+
+
+						if(data?.repayablePositions[0]!=0)
+							setPositions([...positions,{
+								id:`${market?.asset}_${market?.collateral}_${market?.maturationdat}_BORROW`,
+								asset:market?.asset,
+								market:market.id,
+								collateral:market?.collateral,
+								maturity: market?.maturationdate,
+								type: "Borrow",
+								interest:data?.withdrawablePositions[1],
+							}])
 
 					// positionsData.push({
 					// 	asset:market?.asset,

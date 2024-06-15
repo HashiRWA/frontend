@@ -11,7 +11,6 @@ const BorrowPositionPage = () => {
   const router = useRouter();
 
   const position = positions.find((position) => position.id === Number(id));
-
   const isMatured = new Date(position?.maturity ?? "") < new Date();
 
   const handleCloseButton = () => {

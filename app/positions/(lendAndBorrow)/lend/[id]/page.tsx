@@ -3,7 +3,8 @@
 import { useParams } from "next/navigation";
 import { useContext,useState } from "react";
 import { BlockChainContext } from "@/context/BlockChainContext";
-import Image from "next/Image";
+import Image from "next/image";
+
 
 
 const LendPositionPage = () => {
@@ -49,10 +50,23 @@ const LendPositionPage = () => {
             </div>
             <div className="flex gap-5 items-center">
               <div>
-                <input type="number" className="w-full p-2 rounded border" onChange={(e)=>setAmount(e.target.value)} value={amount} placeholder="0.0" max={position?.principle} />
+                <input 
+                  type="number" 
+                  className="w-full p-2 rounded border" 
+                  onChange={(e)=>setAmount(e.target.value)} 
+                  value={amount} 
+                  placeholder="0.0" 
+                  max={position?.principle} 
+                />
               </div>
               <button
-                onClick={()=>withdraw(position?.market,amount!)}
+                onClick={()=>{
+                  if(amount!>position?.principle){
+                    alert(`Amount can never be greater than ${position?.principle}`)
+                    return
+                  }
+                  withdraw(position?.market,amount!)
+                }}
                 className={`h-full rounded-md px-4 bg-slate-600 hover:bg-slate-500 transition-all duration-150 ease-in-out font-semibold ${!isMatured ? "bg-gray-400 text-gray-200" : "bg-blue-200"} cursor-pointer`}>
                 Withdraw Principle
               </button>
