@@ -1,18 +1,47 @@
-
 export const rpcURL = "https://rpc.hongbai.mantrachain.io";
 
 
 export const WhitelistedTokenAddresses = {
-  "mantra15cxyuljght67pazn72kggeqa6ejj7f6gpeypa8yw6tzm95qr0cksq7css2" : 
+  "mantra1nmd4qky3xdp5eu2rxw20kx32hcjg5sym527qmg7gfyut096st8kq9req6k" : 
     {
-      address: "mantra15cxyuljght67pazn72kggeqa6ejj7f6gpeypa8yw6tzm95qr0cksq7css2",
-      name: "GOLD BOND RWA TOKEN",
+      address: "mantra1nmd4qky3xdp5eu2rxw20kx32hcjg5sym527qmg7gfyut096st8kq9req6k",
+      name: "GOLD RWA",
       symbol: "GB-RWA",
       decimals: 6
     },
-    "mantra1c0wehfltspqczqmgv86nn0asf5jstld0yvqzzjtsavsn7pgzakusqa77lj" : 
+    "mantra10f64xuhs0un4veyw06n0tvtx522ynu4f868re3dgwmgzne5k53zs0wa4yd" : 
     {
-        address: "mantra1c0wehfltspqczqmgv86nn0asf5jstld0yvqzzjtsavsn7pgzakusqa77lj",
+        address: "mantra10f64xuhs0un4veyw06n0tvtx522ynu4f868re3dgwmgzne5k53zs0wa4yd",
+        name: "Silver RWA",
+        symbol: "SL-RWA",
+        decimals: 6
+    }
+,
+    "mantra1gnlxsl77a5gkj8jlzv9gwasxcdc54qaenfzn40tcrkldeze9y9uqjrrsyw" : 
+    {
+      address: "mantra1gnlxsl77a5gkj8jlzv9gwasxcdc54qaenfzn40tcrkldeze9y9uqjrrsyw",
+      name: "Wheat RWA",
+      symbol: "WH-RWA",
+      decimals: 6
+    },
+    "mantra1yh6gt9uqmj38haeh2vfjpvtcgfgm5mrx8llgwjpre8k4r3uftm4q3mrmmr" : 
+    {
+        address: "mantra1yh6gt9uqmj38haeh2vfjpvtcgfgm5mrx8llgwjpre8k4r3uftm4q3mrmmr",
+        name: "Platinum RWA",
+        symbol: "PL-RWA",
+        decimals: 6
+    }
+,
+    "mantra1uaffqwv8qjtpznvh6unyzt7wqwsexhlmayc0xfpgkxtrjs88lmqqqns844" : 
+    {
+      address: "mantra1uaffqwv8qjtpznvh6unyzt7wqwsexhlmayc0xfpgkxtrjs88lmqqqns844",
+      name: "Brass RWA",
+      symbol: "BR-RWA",
+      decimals: 6
+    },
+    "mantra18llpcz0xfwhk56lj6wzvakda465fnlnmxty7a7zfwaup79gxa6wqcmgfds" : 
+    {
+        address: "mantra18llpcz0xfwhk56lj6wzvakda465fnlnmxty7a7zfwaup79gxa6wqcmgfds",
         name: "USDC Coin",
         symbol: "USDC",
         decimals: 6
@@ -29,12 +58,3 @@ export const getTokenDetails = (address: string) : {
   // @ts-ignore
   return WhitelistedTokenAddresses[address];
 }
-
-
-export const marketAddresses = [
-  "mantra1gj4pzlcwugsan5tp492p3rqh5f7dpynvcx8ngk2uye8yvlgjsgeqx2uxe8",
-  "mantra1thhh6udvmpghhh3j0k5qkjpzjvete6hjvm7zss05gh9tua79wgkqx9eelp",
-  "mantra1g8yjhsthsmyflefs7wv2zw2dr5z2t5lexke85vln2wd9g9h9ckmq7hj4pt",
-  "mantra173xju83s09skkzfa5geygyc5hsc77y5gneycw9uw5t00zv4alalsng70vu",
-  "mantra1sjufd09aqs52frl5cvt65mqgpzfp05kqqxlawfcz2lxwl5xvcmmqkfmt4c",
-]

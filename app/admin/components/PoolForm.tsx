@@ -1,8 +1,6 @@
 "use client"
 
-import React, { useContext, useEffect, useState } from 'react';
-import { BlockChainContext } from "@/context/BlockChainContext";
-
+import React, { useState } from 'react';
 
 interface FormConfig {
   name: string;
@@ -22,17 +20,18 @@ interface FormState {
 
 const init: FormState = {
   config: {
-    name: "Test Pool",
-    symbol: "TP",
-    maturationdate: 1749773599,
-    debtinterestrate: "17",
-    strikeprice: "2",
-    lendinterestrate: "10",
-    overcollateralizationfactor: "3",
-    asset: "mantra1c0wehfltspqczqmgv86nn0asf5jstld0yvqzzjtsavsn7pgzakusqa77lj", 
-    collateral: "mantra15cxyuljght67pazn72kggeqa6ejj7f6gpeypa8yw6tzm95qr0cksq7css2", 
+    name: "",
+    symbol: "",
+    maturationdate: 0,
+    debtinterestrate: "",
+    strikeprice: "",
+    lendinterestrate: "",
+    overcollateralizationfactor: "",
+    asset: "", 
+    collateral: "", 
   },
 };
+
 
 const PoolForm: React.FC = () => {
 
@@ -41,27 +40,53 @@ const PoolForm: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setForm((prevForm) => ({
-      ...prevForm,
-      config: {
-        ...prevForm.config,
-        [name]: value,
-      },
-    }));
+
+    if(name=="maturationdate"){
+      setForm((prevForm) => ({
+        ...prevForm,
+        config: {
+          ...prevForm.config,
+          [name]: Math.floor(new Date(value).getTime() / 1000),
+        },
+      }));
+      return
+
+    }
+
+    else{
+      setForm((prevForm) => ({
+        ...prevForm,
+        config: {
+          ...prevForm.config,
+          [name]: value,
+        },
+      }));
+      return
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(form)
     const res =  await fetch("/api/uploadContract",{
       method: 'POST',
       body: JSON.stringify({ 
-        init:init,
+        init:form,
         label:"heloo"
       })
     })
 
-    console.log(res.json())
-
+    res.json().then((res)=>{
+      let data = localStorage.getItem("admin-pools")
+      if(!data){
+        localStorage.setItem("admin-pools",JSON.stringify([res.data]))
+        return
+      }
+      else{
+        localStorage.setItem("admin-pools",JSON.stringify([...JSON.parse(data),res.data]))
+        return
+      }
+    })
   };
 
   return (
@@ -90,9 +115,11 @@ const PoolForm: React.FC = () => {
         <div>
           <label className="block mb-2 font-medium text-[#374950]">Maturation Date</label>
           <input 
-            type="number" 
+            type="date" 
             name="maturationdate" 
-            value={form.config.maturationdate} 
+            value={new Date(
+              form.config.maturationdate * 1000
+            ).toDateString()} 
             onChange={handleChange} 
             className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -158,7 +185,7 @@ const PoolForm: React.FC = () => {
           />
         </div>
         <div className="col-span-1 md:col-span-2">
-          <button type="submit" className="w-full py-3 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Borrow</button>
+          <button type="submit" className="w-full py-3 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Create Pool</button>
         </div>
       </form>
     </div>
