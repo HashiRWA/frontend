@@ -33,8 +33,7 @@ const BorrowPositionPage = () => {
           <Image src="/USDC.svg" alt="" width={30} height={30} />
         </div>
         <h1 className="text-lg">
-          {position?.asset?.substring(0, 10)} /{" "}
-          {position?.collateral?.substring(0, 10)}
+        {position?.name} {getTokenDetails(position.asset)?.symbol} / {getTokenDetails(position.collateral)?.symbol}
         </h1>
         <p className="text-sm font-normal">
           {isMatured ? "Matured on" : "Matures on"}{" "}

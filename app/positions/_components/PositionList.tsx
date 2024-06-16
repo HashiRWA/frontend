@@ -47,7 +47,7 @@ const PositionList = ({ title, positions, loading }: PositionListProps) => {
 
                 <div className="flex-1 space-x-2 divide-x-2">
                   <span>
-                  {getTokenDetails(position.asset)?.symbol} / {getTokenDetails(position.collateral)?.symbol}
+                  {position?.name} {getTokenDetails(position.asset)?.symbol} / {getTokenDetails(position.collateral)?.symbol}
                   </span>
                   <span className="px-3 text-xs font-medium">
                     SP: {""}

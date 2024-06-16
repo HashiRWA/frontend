@@ -31,7 +31,7 @@ const LendPage = () => {
           signer
         })
 
-        console.log(res)
+        console.log(res,"potty")
         setBalance(res.balance)
     })()
   },[market?.asset])
@@ -68,7 +68,7 @@ const LendPage = () => {
           <div className="flex gap-2 pb-3">
             <Image src="/USDC.svg" alt="" width={24} height={24} />
             <h3 className="text-xl font-bold">
-            {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)} /  {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}
+            {market?.name} {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)} /  {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}
             </h3>
           </div>
 

@@ -53,7 +53,7 @@ const BorrowPage = () => {
           <div className="flex gap-2 pb-3">
             <Image src="/USDC.svg" alt="" width={24} height={24} />
             <h3 className="text-xl font-bold">
-              {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)} /{" "}
+            {market?.name} {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)} /{" "}
               {market?.collateral.substring(0, 10)}
             </h3>
           </div>

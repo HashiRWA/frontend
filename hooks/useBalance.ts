@@ -40,6 +40,8 @@ export async function useBalance({
             denom
 		)
 
+		console.log(res)
+
 		return {
 			balance: res?.amount,
 			error:undefined,

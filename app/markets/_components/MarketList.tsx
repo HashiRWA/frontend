@@ -13,6 +13,8 @@ import Loader from "@/components/Loader";
 const MarketList = ({ markets }: { markets: Market[] }) => {
   const { pools, loading, signer, connect } = useContext(BlockChainContext);
 
+  console.log(pools)
+
   return (
     <div className="mx-auto flex h-full w-[90%] flex-col items-center rounded-lg bg-white py-4 shadow-2xl">
       <div className="mb-2 flex w-full justify-between border-b p-3 px-8 text-sm font-medium uppercase text-[#374950]">
@@ -71,6 +73,14 @@ const MarketList = ({ markets }: { markets: Market[] }) => {
                         <span className="flex gap-2 text-xs">
                           <span>{market?.strikeprice}</span>
                           <span>{getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)} / {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)} </span>
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold">Lock In Factor:</span>
+                        <span className="flex gap-2 text-xs">
+                          <span>{market?.lockInPeriod}</span>
+                          <span> </span>
                         </span>
                       </div>
                     </div>
