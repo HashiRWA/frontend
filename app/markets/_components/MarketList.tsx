@@ -16,7 +16,7 @@ const MarketList = ({ markets }: { markets: Market[] }) => {
   return (
     <div className="mx-auto flex h-full w-[90%] flex-col items-center rounded-lg bg-white py-4 shadow-2xl">
       <div className="mb-2 flex w-full justify-between border-b p-3 px-8 text-sm font-medium uppercase text-[#374950]">
-        <span className="w-[48%]">Pools (Asset / Collateral)</span>
+        <span className="w-[48%]">Pools (Collateral / Asset)</span>
         <span className="w-[9%]">Debt %</span>
         <span className="w-[7%]">LIR</span>
         <span className="w-[9%] pl-2">Cdp</span>

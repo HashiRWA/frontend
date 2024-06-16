@@ -29,6 +29,7 @@ interface FormConfig {
     debtinterestrate: string;
     strikeprice: string;
     lendinterestrate: string;
+    lockInPeriod:string;
     overcollateralizationfactor: string;
     asset: string;
     collateral: string;
@@ -96,7 +97,7 @@ const initOptions = (options: Options): Network => {
 
 export async function POST(request:NextRequest) {
 
-    const data = await request.json();
+    const data  : ContractConfig= await request.json();
     const [addr, client] = await initOptions(mantraOptions).setup("password");
     
 
@@ -110,9 +111,6 @@ export async function POST(request:NextRequest) {
 
     const codes = await client.getCodes() 
     const hash = codes.filter((x:any) => x.id === uploadRes?.codeId).map((x:any) => x.checksum)[0];
-
-    console.log(hash,"potty")
-
 
     const instantiateResponse = await client.instantiate(
         addr, 

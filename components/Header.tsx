@@ -17,10 +17,6 @@ const links = [
     path: "/positions",
   },
   {
-    name: "Admin",
-    path: "/admin",
-  },
-  {
     name: "Mutual Funds",
     path: "/mutual-funds",
   },

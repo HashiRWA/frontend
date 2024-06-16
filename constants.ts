@@ -1,5 +1,9 @@
 export const rpcURL = "https://rpc.hongbai.mantrachain.io";
 
+export const marketAddresses = [
+  "mantra1u2g05v64gkxlfc0tkjr25zkv6e0cm84cd2qww8kze0h30g29ayysc9wmgj", // GOLD
+  "mantra1ez5qtq6n5r6290hg84gjd5cgssm2wqly3vshdymw96xf9ueexcsqs39hdx", // Silver
+];
 
 export const WhitelistedTokenAddresses = {
   "mantra1nmd4qky3xdp5eu2rxw20kx32hcjg5sym527qmg7gfyut096st8kq9req6k" : 

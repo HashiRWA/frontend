@@ -9,6 +9,7 @@ interface FormConfig {
   debtinterestrate: string;
   strikeprice: string;
   lendinterestrate: string;
+  lockInPeriod: string;
   overcollateralizationfactor: string;
   asset: string;
   collateral: string;
@@ -26,6 +27,7 @@ const init: FormState = {
     debtinterestrate: "",
     strikeprice: "",
     lendinterestrate: "",
+    lockInPeriod: "",
     overcollateralizationfactor: "",
     asset: "", 
     collateral: "", 
@@ -67,12 +69,12 @@ const PoolForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(form)
+    console.log(form, "form dataaaaaaa")
     const res =  await fetch("/api/uploadContract",{
       method: 'POST',
       body: JSON.stringify({ 
         init:form,
-        label:"heloo"
+        label:`Deploying pool ${form.config.name} with symbol ${form.config.symbol}`
       })
     })
 
@@ -160,6 +162,16 @@ const PoolForm: React.FC = () => {
             type="text" 
             name="overcollateralizationfactor" 
             value={form.config.overcollateralizationfactor} 
+            onChange={handleChange} 
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label className="block mb-2 font-medium text-[#374950]">Lock In Factor</label>
+          <input 
+            type="text" 
+            name="lockInPeriod" 
+            value={form.config.lockInPeriod} 
             onChange={handleChange} 
             className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
