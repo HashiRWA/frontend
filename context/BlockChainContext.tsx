@@ -339,7 +339,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		}
 	}
 
-	const borrow = async(market:string,amount:string,asset_addr:string,collateral_addr:string) =>{
+	const borrow = async(market:string,_amount:string,asset_addr:string,collateral_addr:string) =>{
 		setLoading(true)
 
 		if(!signer){
@@ -354,6 +354,8 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			return
 		}
 
+		const amount = (Number(_amount) * (10**6)).toString()
+
 		const {data:quoteData,error:quoteError} = await useContractRead({
 			contractAddress:market,
 			query:{
@@ -364,7 +366,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			signer
 		})
 
-		console.log(quoteData,"quoteData")
+		console.log(quoteData,"borrow : quoteData")
 
 		
 
@@ -380,7 +382,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			signer
 		})
 
-		console.log(approvalData,"approvalData")
+		console.log(approvalData,"borrow : approvalData")
 
 
 		const {data:borrowData,error:borrowError} = await useContractWrite({
@@ -422,7 +424,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		}
 	}
 
-	const repay = async(contractAddress:string,amount:string,asset_addr:string,collateral_addr:string,principle:string) => {
+	const repay = async(contractAddress:string,_amount:string,asset_addr:string,collateral_addr:string,principle:string) => {
 
 		setLoading(true)
 
@@ -432,11 +434,11 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			return undefined
 		}
 
-		
+		const amount = (Number(_amount) * (10**6)).toString()
 
 		const {data:repayApprovalData,error:repayApprovalError} = await useContractWrite({
 			senderAddress:address,
-			contractAddress: collateral_addr,
+			contractAddress: asset_addr,
 			args:{
 				increase_allowance:{
 					spender: contractAddress,
@@ -446,7 +448,8 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			signer
 		})
 
-		console.log("asset_principle",principle)
+
+		console.log("repay: asset_principle",amount, repayApprovalData,"repayApprovalData" )
 
 		const {data:repayDebtData,error:repayDebtError} = await useContractWrite({
 			senderAddress:address,
@@ -455,7 +458,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 				transact:{
 					repay:{
 						asset_denom: asset_addr,
-						asset_principle: principle,
+						asset_principle: amount,
 						collateral_denom: collateral_addr,
 					}
 				}
