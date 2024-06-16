@@ -20,6 +20,15 @@ const links = [
     name: "Mutual Funds",
     path: "/mutual-funds",
   },
+  {
+    name: "Faucet",
+    path: "/faucet",
+  },
+  {
+    name: "Create Pool",
+    path: "/admin",
+  },
+  
 ];
 
 const Header = () => {
