@@ -22,14 +22,14 @@ export type BlockChainContext ={
 	
 	
 	connect:() => Promise<Key | undefined>,
-	lend: (market: any,amount:string) => Promise<{
+	lend: (market: any,amount:string,denom:string) => Promise<{
 		transferData: any;
 		depositData: any;
 	} | undefined>,
 	borrow: (market:string,amount:string,asset_addr:string,collateral_addr:string) => Promise<{
 		borrowData: any;
 	} | undefined>,
-	withdraw: (contractAddress: string, amount: string) => Promise<{
+	withdraw: (contractAddress: string, amount: string,denom:string) => Promise<{
 		closeLendData: any;
 	} | undefined>,
 	repay: (contractAddress: string, amount: string, asset_addr: string, collateral_addr: string,principle:string) => Promise<{
@@ -281,7 +281,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			quoteData
 		}
 	}
-	const lend = async(market:any,amount:string) =>{
+	const lend = async(market:any,amount:string,denom:string) =>{
 
 		setLoading(true)
 
@@ -302,6 +302,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			senderAddress:address,
 			contractAddress:market,
 			amount,
+			denom,
 			signer,
 		})
 
@@ -311,8 +312,8 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			args: { 
 				transact:{
 					deposit:{
-						denom: "mantra1c0wehfltspqczqmgv86nn0asf5jstld0yvqzzjtsavsn7pgzakusqa77lj", 
-						amount,
+						denom: denom, 
+						amount: amount,
 					}
 				}
 			},
@@ -482,7 +483,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		}
 	}
 
-	const withdraw = async(contractAddress:string,amount:string) => {
+	const withdraw = async(contractAddress:string,amount:string,denom:string) => {
 
 		setLoading(true)
 
@@ -500,7 +501,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			args:{
 				transact:{
 					withdraw:{
-						denom:"mantra1c0wehfltspqczqmgv86nn0asf5jstld0yvqzzjtsavsn7pgzakusqa77lj",
+						denom: denom,
 						amount: amount,
 					}
 				}

@@ -169,7 +169,7 @@ const LendPage = () => {
 
               <div>
                 <button
-                  onClick={() => lend(id, amount!)}
+                  onClick={() => lend(id, amount!,market?.asset)}
                   className="w-full gap-3 rounded bg-teal-700 px-8 py-2 text-center text-[14px] font-semibold text-white transition-all duration-150 ease-in-out hover:bg-teal-900">
                   Lend
                 </button>

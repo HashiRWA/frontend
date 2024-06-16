@@ -58,12 +58,12 @@ const MarketList = ({ markets }: { markets: Market[] }) => {
                     <div className="flex w-max flex-col rounded-lg p-2">
                       <span className="flex gap-x-3">
                         <span className="font-bold">Total Assets:</span>
-                        <span>{Number(market?.totalAssets) / (10 ** getTokenDetails(market?.asset).decimals  ) } {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)}</span>
+                        <span>{Number(market?.totalAssets) / (10 ** getTokenDetails(market?.asset)?.decimals  ) } {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)}</span>
                       </span>
 
                       <span className="flex gap-x-3">
                         <span className="font-bold">Total Collateral:</span>
-                        <span>{Number(market?.totalCollateral) / (10 ** getTokenDetails(market?.collateral).decimals  ) } {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}</span>
+                        <span>{Number(market?.totalCollateral) / (10 ** getTokenDetails(market?.collateral)?.decimals  ) } {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}</span>
                       </span>
 
                       <div className="flex items-center gap-2">

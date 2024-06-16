@@ -60,7 +60,7 @@ const LendPositionPage = () => {
                 );
                 return;
               }
-              withdraw(position?.market, amount!);
+              withdraw(position?.market, amount!,position?.asset);
             }}
             className={`h-full rounded-md bg-slate-600 px-4 font-semibold transition-all duration-150 ease-in-out hover:bg-slate-500 ${!isMatured ? "bg-gray-400 text-gray-200" : "bg-blue-200"} cursor-pointer`}>
             Withdraw Principle

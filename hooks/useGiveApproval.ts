@@ -5,7 +5,8 @@ import { GasPrice } from "@cosmjs/stargate"
 export interface ContractConfig {
     senderAddress: string,
 	contractAddress: string,
-	amount:string
+	amount:string,
+	denom:string,
 	signer:OfflineDirectSigner
 }
 
@@ -13,6 +14,7 @@ export async function useGiveApproval({
     senderAddress,
 	contractAddress,
 	amount,
+	denom,
 	signer
 }:ContractConfig): Promise<{
 	data:any,
@@ -62,7 +64,7 @@ export async function useGiveApproval({
 
         const res = await client.execute(
             senderAddress,
-            "mantra1c0wehfltspqczqmgv86nn0asf5jstld0yvqzzjtsavsn7pgzakusqa77lj",
+            denom,
             {
                 increase_allowance:{
                     spender: contractAddress,
