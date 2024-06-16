@@ -306,6 +306,8 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			signer,
 		})
 
+		console.log(address,market,denom,amount)
+
 		const {data:depositData,error:depositError} = await useContractWrite({
 			senderAddress:address,
 			contractAddress:market,
