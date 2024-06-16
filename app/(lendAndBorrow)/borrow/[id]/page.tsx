@@ -10,7 +10,6 @@ import { useContext, useState,useEffect } from "react";
 import { BlockChainContext } from "@/context/BlockChainContext";
 import Loader from "@/components/Loader";
 
-import {useBalance} from "@/hooks/useBalance"
 const info = ["Maturity", "Strike Price", "CDP"];
 const poolStats = ["Total Assests", "Total Volume", "Liquidity"];
 
@@ -19,22 +18,7 @@ const BorrowPage = () => {
   const { pools, loading, borrow , signer, address} = useContext(BlockChainContext);
   const [amount, setAmount] = useState<string>();
   const market = pools.find((market) => market.id === id);
-  const [balance,setBalance] = useState<string>();
-
-  useEffect(()=>{
-    (async()=>{
-        if(!signer) return
-
-        const res = await useBalance({
-          address:address!,
-          denom:market?.collateral,
-          signer
-        })
-
-        console.log(res)
-        setBalance(res.balance)
-    })()
-  },[market?.collateral, signer])
+  const [balance,setBalance] = useState<string>(0);
 
   return (
     <div className="mx-auto mt-48 w-[60%] rounded-lg bg-white p-6 text-[#374950] shadow-2xl">

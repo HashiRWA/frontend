@@ -1,4 +1,5 @@
 "use client";
+
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -6,7 +7,6 @@ import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { getTokenDetails } from "@/constants";
 import { BlockChainContext } from "@/context/BlockChainContext";
-import {useBalance} from "@/hooks/useBalance"
 import Loader from "@/components/Loader";
 
 
@@ -15,41 +15,14 @@ const poolStats = ["Total Assests", "Total Volume", "Liquidity"];
 
 
 const LendPage = () => {
+
+
   const { id } = useParams();
   const [amount,setAmount] = useState<string>();
-  const [balance,setBalance] = useState<string>();
+  const [balance,setBalance] = useState<string>(0);
   const {pools, lend, loading, address, signer} = useContext(BlockChainContext)
   const market = pools.find((market) => market.id === id);
 
-  useEffect(()=>{
-    (async()=>{
-        if(!signer) return
-
-        const res = await useBalance({
-          address:address!,
-          denom:market?.asset,
-          signer
-        })
-
-        console.log(res,"potty")
-        setBalance(res.balance)
-    })()
-  },[market?.asset])
-
-  useEffect(()=>{
-    (async()=>{
-        if(!signer) return
-
-        const res = await useBalance({
-          address:address!,
-          denom:market?.asset,
-          signer
-        })
-
-        console.log(res)
-        setBalance(res.balance)
-    })()
-  },[market?.asset])
 
   return (
     <div className="mx-auto mt-48 w-[60%] rounded-lg bg-white p-6 text-[#374950] shadow-2xl">
