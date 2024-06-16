@@ -25,9 +25,8 @@ const Profile = ({ details, investments }: ProfileProps) => {
   const { person, image, text } = details[0];
 
   return (
-    <div className="flex gap-5 items-center justify-center h-max">
-      <div className="grid grid-cols-1 gap-6 rounded-lg bg-white w-full px-10 py-11 h-full">
-        
+    <div className="flex h-max items-center justify-center gap-5">
+      <div className="grid h-full w-full grid-cols-1 gap-6 rounded-lg bg-white px-10 py-11 shadow-xl">
         <div className="justify-self-start">
           <Image
             src={image}
@@ -40,9 +39,7 @@ const Profile = ({ details, investments }: ProfileProps) => {
         <h2 className="text-3xl">
           <span className="text-4xl font-bold text-emerald-900"> {person}</span>
         </h2>
-        <p className="relative text-sm w-[70%]">
-          {text}
-        </p>
+        <p className="relative w-[70%] text-sm">{text}</p>
       </div>
       <PieChart investments={investments} />
     </div>

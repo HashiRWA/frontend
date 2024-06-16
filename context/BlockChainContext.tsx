@@ -1,13 +1,24 @@
-"use client"
+"use client";
 
-import { createContext, useState, useCallback, useEffect } from "react"
-import { Keplr,Key,OfflineAminoSigner,OfflineDirectSigner} from '@keplr-wallet/types';
+import { createContext, useState, useCallback, useEffect } from "react";
+import {
+  Keplr,
+  Key,
+  OfflineAminoSigner,
+  OfflineDirectSigner,
+} from "@keplr-wallet/types";
 import { useChain } from "../hooks/useChain";
 import { useContractRead } from "@/hooks/useContractRead";
 import { useContractWrite } from "@/hooks/useContractWrite";
 import {marketAddresses} from "@/constants";
 import { useGiveApproval } from "@/hooks/useGiveApproval";
 
+export type BlockChainContext = {
+  address: string | undefined;
+  signer: (OfflineAminoSigner & OfflineDirectSigner) | undefined;
+  pools: any[];
+  positions: any[];
+  loading: boolean;
 
 export type BlockChainContext ={
 	address: string | undefined,
@@ -44,7 +55,7 @@ export type BlockChainContext ={
 }
 
 interface BlockChainContextProviderProps {
-	children: JSX.Element | JSX.Element[]
+  children: JSX.Element | JSX.Element[];
 }
 
 

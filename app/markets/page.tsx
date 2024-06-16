@@ -3,7 +3,7 @@ import markets from "../../data/markets";
 
 const MarketPage = () => {
   return (
-    <main className="py-4 mt-24 w-full">
+    <main className="mt-24 size-full pb-10 pt-4">
       <MarketList markets={markets} />
     </main>
   );
