@@ -504,7 +504,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 				transact:{
 					withdraw:{
 						denom: denom,
-						amount: Number(Number(amount)*(10**6)).toString(),,
+						amount: Number(Number(amount)*(10**6)).toString(),
 					}
 				}
 			},
