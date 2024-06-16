@@ -576,7 +576,13 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		(async()=>{
 			let poolsData:any[] = [];
 			setLoading(true)
-			marketAddresses.forEach(async(addr)=>{
+			const data = localStorage.getItem("admin-pools")
+
+			let addresses = []
+			if(!data) addresses = [...marketAddresses]
+			else addresses = [...marketAddresses,...JSON.parse(data)]
+
+			addresses.forEach(async(addr)=>{
 				const res = await getPools(addr)
 				if(res){
 					poolsData = [...poolsData,res]

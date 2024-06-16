@@ -38,7 +38,7 @@ const MarketList = ({ markets }: { markets: Market[] }) => {
                       <Image src="/USDC.svg" alt="" width={30} height={30} />
                       <Image src="/USDC.svg" alt="" width={30} height={30} />
                     </div>
-                    {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)} / {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}
+                    {market?.name}  {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)} / {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}
                   </span>
 
                   <span className="w-[9%]">{market?.debtinterestrate}%</span>

@@ -17,6 +17,10 @@ const links = [
     path: "/positions",
   },
   {
+    name: "Admin",
+    path: "/admin",
+  },
+  {
     name: "Mutual Funds",
     path: "/mutual-funds",
   },
@@ -42,7 +46,7 @@ const Header = () => {
           />
         </Link>
 
-        <div className="text-md flex items-center gap-4 rounded-md px-0.5 py-2 font-medium text-[#374950b1]">
+        <div className="text-sm flex items-center gap-4 rounded-md px-0.5 py-2 font-medium text-[#374950b1]">
           {links.map((link) => (
             <Link
               key={link.path}

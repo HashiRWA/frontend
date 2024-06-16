@@ -126,10 +126,7 @@ export async function POST(request:NextRequest) {
         "auto"
     )
 
-
-     console.log(instantiateResponse)
-
     return NextResponse.json({
-        data: "Done",
+        data: instantiateResponse?.contractAddress,
     })
 }
