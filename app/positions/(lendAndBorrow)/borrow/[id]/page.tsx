@@ -46,9 +46,9 @@ const BorrowPositionPage = () => {
           <span>Amount at Maturity</span>
 
           <div className="space-x-5 font-semibold">
-            <span>Principle: ${quotation?.[0]}</span>
-            <span>Interest: {quotation?.[1]}%</span>
-            <span>Collateral: ${quotation?.[2]}</span>
+            <span>Principle: ${Number(quotation?.[0]) / (10**6)}</span>
+            <span>Interest: ${Number(quotation?.[1]) / (10**6)}</span>
+            <span>Collateral: ${Number(quotation?.[2]) / (10**6)}</span>
           </div>
         </div>
 

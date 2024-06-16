@@ -3,6 +3,9 @@ export const rpcURL = "https://rpc.hongbai.mantrachain.io";
 export const marketAddresses = [
   "mantra1u2g05v64gkxlfc0tkjr25zkv6e0cm84cd2qww8kze0h30g29ayysc9wmgj", // GOLD
   "mantra1ez5qtq6n5r6290hg84gjd5cgssm2wqly3vshdymw96xf9ueexcsqs39hdx", // Silver
+  "mantra1rxu3a0tm5anemx74pnd9g0t0n8kpk92275j7dls6dcl0kh2559ssv54a8p", // Wheat
+  "mantra14yple7m86xzakwnm5ewum9tunpcmlxs78w8reh5t96529znr532s2p6zjh", // Platinum
+  "mantra1pszvvktakz5p2u485jpacs80nwfe2mpwpxl3nm7n5zhxvxstyg7suwga8v"  // Brass
 ];
 
 export const WhitelistedTokenAddresses = {

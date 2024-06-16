@@ -13,12 +13,12 @@ import Loader from "@/components/Loader";
 const MarketList = ({ markets }: { markets: Market[] }) => {
   const { pools, loading, signer, connect } = useContext(BlockChainContext);
 
-  console.log(pools)
 
   return (
     <div className="mx-auto flex h-full w-[90%] flex-col items-center rounded-lg bg-white py-4 shadow-2xl">
       <div className="mb-2 flex w-full justify-between border-b p-3 px-8 text-sm font-medium uppercase text-[#374950]">
         <span className="w-[48%]">Pools (Collateral / Asset)</span>
+        <span className="w-[9%]">Lock In Factor</span>
         <span className="w-[9%]">Debt %</span>
         <span className="w-[7%]">LIR</span>
         <span className="w-[9%] pl-2">Cdp</span>
@@ -40,8 +40,9 @@ const MarketList = ({ markets }: { markets: Market[] }) => {
                       <Image src="/USDC.svg" alt="" width={30} height={30} />
                       <Image src="/USDC.svg" alt="" width={30} height={30} />
                     </div>
-                    {market?.name}  {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)} / {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}
+                    {market?.name} {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)} / {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)}
                   </span>
+                  <span className="w-[9%]">{market?.lockInPeriod}</span>
 
                   <span className="w-[9%]">{market?.debtinterestrate}%</span>
                   <span className="w-[9%]">{market?.lendinterestrate}%</span>

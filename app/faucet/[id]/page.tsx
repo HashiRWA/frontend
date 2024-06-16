@@ -21,7 +21,7 @@ const Faucet = () => {
       signer,
       address!,
       id,
-      "100000000000")
+      "1000000000")
     setResponse(res);
   }
   
