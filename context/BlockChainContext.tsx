@@ -315,7 +315,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 				transact:{
 					deposit:{
 						denom: denom, 
-						amount: amount,
+						amount: Number(Number(amount)*(10**6)).toString(),
 					}
 				}
 			},
@@ -504,7 +504,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 				transact:{
 					withdraw:{
 						denom: denom,
-						amount: amount,
+						amount: Number(Number(amount)*(10**6)).toString(),,
 					}
 				}
 			},
