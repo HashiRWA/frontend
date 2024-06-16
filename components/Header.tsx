@@ -4,93 +4,75 @@ import { Wallet } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContext } from "react";
-import { BlockChainContext } from '@/context/BlockChainContext';
+import { BlockChainContext } from "@/context/BlockChainContext";
 import Image from "next/image";
 
 const links = [
-	{
-		name: "Markets",
-		path: "/markets",
-	},
-	{
-		name: "Positions",
-		path: "/positions",
-	},
-	{
-		name: "Mutual Funds",
-		path: "/mutual-funds",
-	},
+  {
+    name: "Markets",
+    path: "/markets",
+  },
+  {
+    name: "Positions",
+    path: "/positions",
+  },
+  {
+    name: "Mutual Funds",
+    path: "/mutual-funds",
+  },
 ];
 
 const Header = () => {
-	const pathname = usePathname();
-	const isActive = (path: string) => path === pathname || pathname.startsWith(path);
+  const pathname = usePathname();
+  const isActive = (path: string) =>
+    path === pathname || pathname.startsWith(path);
 
-	const {connect,signer, address} = useContext(BlockChainContext)
+  const { connect, signer, address } = useContext(BlockChainContext);
 
-	return (
-		<header className="fixed top-0 w-[80%] m-5 bg-white rounded-full bg-transparent z-10 py-1 shadow-lg">
+  return (
+    <header className="fixed top-0 z-10 m-5 w-[60%] rounded-full bg-transparent bg-white py-1 shadow-lg">
+      <nav className="flex items-center justify-between px-8">
+        <Link href="/markets">
+          <Image
+            className="cursor-pointer drop-shadow-md transition-all duration-200 ease-in-out hover:animate-spin hover:drop-shadow-lg"
+            height={40}
+            width={40}
+            src={"/logo.svg"}
+            alt="logo"
+          />
+        </Link>
 
-			<nav className="flex justify-between items-center px-8">
+        <div className="text-md flex items-center gap-4 rounded-md px-0.5 py-2 font-medium text-[#374950b1]">
+          {links.map((link) => (
+            <Link
+              key={link.path}
+              href={link.path}
+              className={`rounded px-3 py-2 transition-all duration-150 ease-in-out hover:text-[#374950] ${
+                isActive(link.path) && "text-[#374950]"
+              } `}>
+              {link.name}
+            </Link>
+          ))}
+        </div>
 
-				<Link href="/markets">
-					<Image
-						className="hover:animate-spin hover:drop-shadow-lg cursor-pointer transition-all ease-in-out duration-200 drop-shadow-md"
-						height={40}
-						width={40}
-						src={"/logo.svg"}
-						alt="logo"
-					/>
-				</Link>
-
-				
-				<div className="py-2 flex items-center gap-4 rounded-md text-md px-0.5 text-[#374950b1]">
-					{links.map((link) => (
-						<Link
-							key={link.path}
-							href={link.path}
-							className={` px-3 hover:text-[#374950]  py-2 rounded transition-all duration-150 ease-in-out ${
-								isActive(link.path) && "text-[#374950]"
-							} `}>
-							{link.name}
-						</Link>
-					))}
-				</div>
-
-
-				<div className="flex items-center gap-4">
-					{
-						signer?
-						<div 
-							className="rounded flex gap-2 border px-3 py-2"
-						>
-							<div> 
-								{address?.slice(0,6)}...{address?.slice(-4)}
-							</div>
-							<Image
-								height={25}
-								width={25}
-								src={"/keplr.png"}
-								alt="logo"
-							/>
-
-						</div>:
-						<button 
-							onClick={connect}
-							className="rounded flex gap-2 border px-3 py-2"
-						>
-							<div> 
-								Connect Wallet
-							</div>
-							<Wallet />
-						</button>
-					}
-
-				</div>
-
-			</nav>
-		</header>
-	);
+        <div className="flex items-center gap-4">
+          {signer ? (
+            <div className="flex gap-2 rounded border px-3 py-2">
+              	{address?.slice(0,6)}...{address?.slice(-4)}
+              <Image height={25} width={25} src={"/keplr.png"} alt="logo" />
+            </div>
+          ) : (
+            <button
+              onClick={connect}
+              className="flex gap-2 rounded border px-3 py-2">
+              <div> Connect Wallet </div>
+              <Wallet />
+            </button>
+          )}
+        </div>
+      </nav>
+    </header>
+  );
 };
 
-	export default Header;
+export default Header;
