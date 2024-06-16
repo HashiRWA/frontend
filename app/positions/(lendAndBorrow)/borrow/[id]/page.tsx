@@ -3,6 +3,8 @@
 import { useParams } from "next/navigation";
 import { useContext,useState, useEffect } from "react";
 import { BlockChainContext } from "@/context/BlockChainContext";
+import { getTokenDetails } from "@/constants";
+
 import Image from "next/image";
 
 
@@ -40,7 +42,7 @@ const BorrowPositionPage = () => {
           <Image src="/USDC.svg" alt="" width={30} height={30} />
         </div>
         <h1 className="text-lg">
-          {position?.asset?.substring(0,10)} / {position?.collateral?.substring(0,10)}
+          {getTokenDetails(position?.asset) ? getTokenDetails(position?.asset)?.symbol : position?.asset?.substring(0,20)} /  {getTokenDetails(position?.collateral) ? getTokenDetails(position?.collateral)?.symbol : position?.collateral?.substring(0,20)}
         </h1>
         <p className="text-sm font-normal">
           {isMatured ? "Matured on" : "Matures on"} {new Date(position?.maturity * 1000).toLocaleDateString()}

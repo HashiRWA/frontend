@@ -57,13 +57,13 @@ const PositionList = ({ title, positions }: PositionListProps) => {
                 <span className="px-3 text-xs font-medium">
                   Strike: {""}
                   <span className="text-xs">
-                    {position.strikeprice} {getTokenDetails(position.collateral)?.symbol} /  {getTokenDetails(position.asset)?.symbol}
+                    {position?.strikeprice} {getTokenDetails(position.collateral)?.symbol} /  {getTokenDetails(position.asset)?.symbol}
                   </span>
                 </span>
                 <span className="px-3 text-xs font-medium">
                   OCF: {""}
                   <span className="text-xs">
-                    {position.strikeprice} {getTokenDetails(position.collateral)?.symbol} /  {getTokenDetails(position.asset)?.symbol}
+                    {position?.strikeprice} {getTokenDetails(position.collateral)?.symbol} /  {getTokenDetails(position.asset)?.symbol}
                   </span>
                 </span>
                 

@@ -29,3 +29,12 @@ export const getTokenDetails = (address: string) : {
   // @ts-ignore
   return WhitelistedTokenAddresses[address];
 }
+
+
+export const marketAddresses = [
+  "mantra1gj4pzlcwugsan5tp492p3rqh5f7dpynvcx8ngk2uye8yvlgjsgeqx2uxe8",
+  "mantra1thhh6udvmpghhh3j0k5qkjpzjvete6hjvm7zss05gh9tua79wgkqx9eelp",
+  "mantra1g8yjhsthsmyflefs7wv2zw2dr5z2t5lexke85vln2wd9g9h9ckmq7hj4pt",
+  "mantra173xju83s09skkzfa5geygyc5hsc77y5gneycw9uw5t00zv4alalsng70vu",
+  "mantra1sjufd09aqs52frl5cvt65mqgpzfp05kqqxlawfcz2lxwl5xvcmmqkfmt4c",
+]

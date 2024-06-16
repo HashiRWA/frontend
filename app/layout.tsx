@@ -39,7 +39,7 @@ export default function RootLayout({
 								},
 							}}
 						/>
-						<SplashScreen/>
+						{/* <SplashScreen/> */}
 						<Header />
 						<LoaderProvider>
 							{children}

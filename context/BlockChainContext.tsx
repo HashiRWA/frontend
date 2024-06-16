@@ -5,6 +5,7 @@ import { Keplr,Key,OfflineAminoSigner,OfflineDirectSigner} from '@keplr-wallet/t
 import { useChain } from "../hooks/useChain";
 import { useContractRead } from "@/hooks/useContractRead";
 import { useContractWrite } from "@/hooks/useContractWrite";
+import {marketAddresses} from "@/constants";
 import { useGiveApproval } from "@/hooks/useGiveApproval";
 
 
@@ -31,6 +32,9 @@ export type BlockChainContext ={
 		repayDebtData: any;
 	} | undefined>,
 	getRepayQuotation: (market: string) => Promise<{
+		quoteData: any;
+	} | undefined>,
+	getWithdrawQuotation: (market: string) => Promise<{
 		quoteData: any;
 	} | undefined>,
 	withdrawInterest: (contractAddress: string) => Promise<{
@@ -109,53 +113,35 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		return account
 	}
 
-	const getPools = async (contractAddress:string,id:string) => {
+	const getPools = async (contractAddress:string) => {
 
 		if(!signer){
 			console.log("Please connect wallet")
 			return undefined
 		}
 
-		const {data:poolConfig,error:poolConfigError} = await useContractRead({
+		const {data:allDetails,error:allDetailsError} = await useContractRead({
 			contractAddress: contractAddress,
 			query:{
-				poolConfig:{}
+				allDetails:{}
 			},
 			signer
 		})
 
-		const {data:totalAssets,error:totalAssetsError} = await useContractRead({
-			contractAddress: contractAddress,
-			query:{
-				getTotalAssetAvailable:{}
-			},
-			signer
-		})
-
-		const {data:totalCollateral,error:totalCollateralError} = await useContractRead({
-			contractAddress: contractAddress,
-			query:{
-				getTotalCollateralAvailable:{}
-			},
-			signer
-		})
-
-		if(poolConfigError||totalAssetsError||totalCollateralError){
+		if(allDetailsError){
 
 			console.log(
-				"poolConfigError",poolConfigError,
-				"totalAssetsError",totalAssetsError,
-				"totalCollateralError",totalCollateralError
+				"allDetailsError",allDetailsError,
 			)
 
 			return undefined
 		}
 
 		const pool = {
-			id,
-			...poolConfig.res,
-			totalAssets:totalAssets.res,
-			totalCollateral:totalCollateral.res
+			id: contractAddress,
+			totalAssets: allDetails.res?.[2],
+			totalCollateral: allDetails.res?.[3],
+			...allDetails.res?.[0],
 		}
 
 		return pool
@@ -174,49 +160,78 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			return undefined
 		}
 
-		const {data:withdrawablePositions,error:withdrawablePositionsError} = await useContractRead({
+		const {data:positions,error:positionsError} = await useContractRead({
 			contractAddress: market.id,
 			query:{
-				getWithdrawablePositions:{
+				getWithdrawableAndRepayablePositions:{
 					user:address
 				}
 			},
 			signer
 		})
 
-		const {data:repayablePositions,error:repayablePositionsError} = await useContractRead({
-			contractAddress: market.id,
-			query:{
-				getTotalAssetAvailable:{
-					user:address
-				}
-			},
-			signer
-		})
-
-
-		if(withdrawablePositionsError||repayablePositionsError){
-
+		if(positionsError){
 			console.log(
-				"withdrawablePositionsError",withdrawablePositionsError,
-				"repayablePositionsError",repayablePositionsError,
+				"positionsError",positionsError,
 			)
-
 			return undefined
 		}
 
 		console.log(
-			"withdrawablePositions",withdrawablePositions,
-			"repayablePositions",repayablePositions,
+			"positions",positions,
 		)
 
 
 		return{
-			repayablePositions:repayablePositions.res,
-			withdrawablePositions:withdrawablePositions.res
+			withdrawablePositions:positions.res?.[0],
+			repayablePositions:positions.res?.[1],
 		}
 
 		
+	}
+
+	const getWithdrawQuotation = async(market:string) =>{
+		setLoading(true)
+
+		if(!signer){
+			console.log("No Wallet Connected")
+			setLoading(false)
+			return
+		}
+
+		if(!address){
+			console.log("No Wallet Connected")
+			setLoading(false)
+			return
+		}
+
+		const {data:quoteData,error:quoteError} = await useContractRead({
+			contractAddress:market,
+			query:{
+				getWithdrawQuote:{
+					user: address,
+				}
+			},
+			signer
+		})
+
+		console.log(quoteData,"quoteData")
+
+		if(quoteError){
+			console.log(
+				"quoteError",quoteError,
+			)
+
+			setLoading(false)
+
+			return undefined
+		}
+
+		setLoading(false)
+
+		return {
+			quoteData
+		}
 	}
 
 	const getRepayQuotation = async(market:string) =>{
@@ -552,22 +567,23 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 
 	useEffect(()=>{
 		(async()=>{
+			let poolsData:any[] = [];
 			setLoading(true)
-			let pool;
-			pool = await getPools("mantra19pnf44x3fjg2wzw6qz29eqd3jfz0wuxl7smuz50wd4thntytnq8qhmmc34","mantra19pnf44x3fjg2wzw6qz29eqd3jfz0wuxl7smuz50wd4thntytnq8qhmmc34")
-			if(pool){
-				setPools([
-					pool
-				])
-			}
-			setLoading(false)
+			marketAddresses.forEach(async(addr)=>{
+				const res = await getPools(addr)
+				if(res){
+					poolsData = [...poolsData,res]
+					setPools(poolsData)
+					setLoading(false)
+				} 
+			})
 		})()
 	},[signer])
 
 	useEffect(()=>{
 		(async()=>{
-			setLoading(true)
 			let positionData:any[] = [];
+			setLoading(true)
 			pools.forEach(async(market)=>{
 				const data = await getPositions(market);
 				if(data){	
@@ -587,7 +603,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 						]
 
 
-					if(data?.repayablePositions[0]!=0)
+					if(data?.repayablePositions[0]!=0||data?.repayablePositions[1]!=0)
 						positionData = [
 							...positionData,{
 								id:`${market?.asset}_${market?.collateral}_${market?.maturationdat}_BORROW`,
@@ -599,11 +615,12 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 								interest:data?.withdrawablePositions[1],
 							}
 						]
+
+					setPositions(positionData)
+					setLoading(false)
 				}
 
-				setPositions(positionData)
 			})
-			setLoading(false)
 		})()
 	},[pools])
 
@@ -620,6 +637,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			repay,
 			withdraw,
 			getRepayQuotation,
+			getWithdrawQuotation,
 			withdrawInterest
 		}}>
 			{children}

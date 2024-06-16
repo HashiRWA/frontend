@@ -18,10 +18,10 @@ const MarketList = ({ markets }: { markets: Market[] }) => {
 	return (
 		<div className="mx-auto w-[90%] flex flex-col items-center  rounded-lg bg-white py-2">
 
-			<div className="flex justify-between border-b p-3 mb-2 text-sm font-medium text-[#374950] uppercase px-8 w-full">
+			<div className="flex justify-between border-b p-3 mb-2  text-sm font-medium text-[#374950] uppercase px-8 w-full">
 				<span className="w-2/4">Markets (Asset / Collateral)</span>
-				<span>Deposit Interest Rate</span>
-				<span>Debt Interest Rate</span>
+				<span>Deposit%</span>
+				<span>Debt%</span>
 				<span>CDP</span>
 				<span>Maturity</span>
 			</div>
@@ -54,12 +54,12 @@ const MarketList = ({ markets }: { markets: Market[] }) => {
 								<div className="flex flex-col p-2 rounded-lg w-max">
 									<span className="flex gap-x-3 ">
 										<span className="font-bold">Total Assets:</span>
-										<span>{Number(market?.totalAssets) / (10 ** getTokenDetails(market?.asset).decimals  ) } {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)}</span>
+										<span>{Number(market?.totalAssets) / (10 ** getTokenDetails(market?.asset)?.decimals  ) } {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)}</span>
 									</span>
 
 									<span className="flex gap-x-3">
 										<span className="font-bold">Total Collateral:</span>
-										<span>{Number(market?.totalCollateral) / (10 ** getTokenDetails(market?.collateral).decimals  ) } {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}</span>
+										<span>{Number(market?.totalCollateral) / (10 ** getTokenDetails(market?.collateral)?.decimals  ) } {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}</span>
 									</span>
 
 									<div className="flex items-center gap-2 ">

@@ -1,8 +1,10 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useContext,useState } from "react";
+import { useContext,useState, useEffect } from "react";
 import { BlockChainContext } from "@/context/BlockChainContext";
+import { getTokenDetails } from "@/constants";
+
 import Image from "next/image";
 
 
@@ -10,10 +12,19 @@ import Image from "next/image";
 const LendPositionPage = () => {
   const { id } = useParams();
   const [amount,setAmount] = useState<string>()
-  const {positions,withdraw, withdrawInterest, loading} = useContext(BlockChainContext)
+  const [quotation,setQuotation] = useState<string>("1000")
+
+  const {positions,withdraw, withdrawInterest, loading,getWithdrawQuotation} = useContext(BlockChainContext)
 
   const position = positions.find((position) => position.id === id);
   const isMatured = new Date(position?.maturity*1000) < new Date();
+
+  useEffect(()=>{
+    (async()=>{
+        const data = await getWithdrawQuotation(position?.market)
+        setQuotation(data?.quoteData.res)
+    })()
+  },[position])
 
   return (
     <div className="space-y-4 px-4 py-2 text-[#374950]">
@@ -26,7 +37,7 @@ const LendPositionPage = () => {
             <Image src="/USDC.svg" alt="" width={30} height={30} />
           </div>
           <h1 className="text-lg">
-            {position?.asset?.substring(0,10)} / {position?.collateral?.substring(0,10)}
+            {getTokenDetails(position?.asset) ? getTokenDetails(position?.asset)?.symbol : position?.asset?.substring(0,20)} /  {getTokenDetails(position?.collateral) ? getTokenDetails(position?.collateral)?.symbol : position?.collateral?.substring(0,20)}
           </h1>
           <p className="text-sm font-normal">
             {isMatured ? "Matured on" : "Matures on"} {new Date(position?.maturity * 1000).toLocaleDateString()}
@@ -38,7 +49,9 @@ const LendPositionPage = () => {
               <span>Amount at Maturity</span>
 
               <div className="space-x-5 font-semibold">
-                  
+                <span>Principle: ${quotation?.[0]}</span>
+                <span>Interest: {quotation?.[1]}%</span>
+                <span>Collateral: ${quotation?.[2]}</span>
               </div>
             </div>
 
