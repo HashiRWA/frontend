@@ -301,6 +301,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 		const {data:transferData,error:transferError} = await useGiveApproval({
 			senderAddress:address,
 			contractAddress:market,
+			amount,
 			signer,
 		})
 
@@ -406,6 +407,8 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 
 			return undefined
 		}
+
+		console.log(borrowData,"borrowed")
 
 		setLoading(false)
 
@@ -591,7 +594,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 			pools.forEach(async(market)=>{
 				const data = await getPositions(market);
 				if(data){	
-					if(data?.withdrawablePositions[0]!=0||data?.withdrawablePositions[1]!=0)
+					if(parseInt(data?.withdrawablePositions[0])>0||parseInt(data?.withdrawablePositions[1])>0)
 						positionData = [
 							...positionData,{
 								id:`${market?.asset}_${market?.collateral}_${market?.maturationdat}_LEND`,
@@ -607,7 +610,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 						]
 
 
-					if(data?.repayablePositions[0]!=0||data?.repayablePositions[1]!=0)
+					if(parseInt(data?.repayablePositions[0])>0||parseInt(data?.repayablePositions[1])>0)
 						positionData = [
 							...positionData,{
 								id:`${market?.asset}_${market?.collateral}_${market?.maturationdat}_BORROW`,
@@ -620,6 +623,7 @@ export function BlockChainProvider({children}:BlockChainContextProviderProps) {
 							}
 						]
 
+					
 					setPositions(positionData)
 					setLoading(false)
 				}

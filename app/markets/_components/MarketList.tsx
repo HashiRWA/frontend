@@ -76,7 +76,7 @@ const MarketList = ({ markets }: { markets: Market[] }) => {
                     </div>
                   </div>
 
-                  <div className="flex flex-1 items-center justify-center gap-5">
+                  <div className="flex flex-1 items-center justify-end gap-5">
                     <Link
                       href={`/lend/${market?.id}`}
                       className="flex items-center gap-3 rounded bg-[#00494d] px-8 py-2 font-medium text-[#E0F6EC] ring-inset ring-[#00494d] transition-colors duration-150 ease-in-out hover:bg-[#E0F6EC] hover:text-[#00494d] hover:ring-[1px]">

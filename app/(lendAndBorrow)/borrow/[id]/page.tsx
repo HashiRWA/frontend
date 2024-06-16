@@ -10,12 +10,13 @@ import { useContext, useState,useEffect } from "react";
 import { BlockChainContext } from "@/context/BlockChainContext";
 import Loader from "@/components/Loader";
 
+import {useBalance} from "@/hooks/useBalance"
 const info = ["Maturity", "Strike Price", "CDP"];
 const poolStats = ["Total Assests", "Total Volume", "Liquidity"];
 
 const BorrowPage = () => {
   const { id } = useParams();
-  const { pools, loading, borrow , signer} = useContext(BlockChainContext);
+  const { pools, loading, borrow , signer, address} = useContext(BlockChainContext);
   const [amount, setAmount] = useState<string>();
   const market = pools.find((market) => market.id === id);
   const [balance,setBalance] = useState<string>();
@@ -52,7 +53,7 @@ const BorrowPage = () => {
           <div className="flex gap-2 pb-3">
             <Image src="/USDC.svg" alt="" width={24} height={24} />
             <h3 className="text-xl font-bold">
-              {market?.asset?.substring(0, 10)} /{" "}
+              {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)} /{" "}
               {market?.collateral.substring(0, 10)}
             </h3>
           </div>
@@ -77,8 +78,8 @@ const BorrowPage = () => {
                   <span>
                     {market?.strikeprice}{" "}
                     <span className="text-xs font-medium">
-                      {market?.asset?.substring(0, 10)} /{" "}
-                      {market?.collateral?.substring(0, 10)}
+                      {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)} /{" "}
+                      {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}
                     </span>
                   </span>
                   <span>{market?.overcollateralizationfactor * 100}%</span>
@@ -113,14 +114,14 @@ const BorrowPage = () => {
               <div className="space-y-5 rounded-md bg-[#f4fafa] p-4 ring-[1px] ring-[#00494d]">
                 <div className="flex justify-end">
                   <span>
-                    Bal: {market?.asset?.substring(0, 10)}
-                    <span className="font-bold uppercase">Max</span>
+                    Bal: {balance} {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)}
+                    <span className="font-bold uppercase"> Max</span>
                   </span>
                 </div>
                 <div className="flex items-center divide-x divide-emerald-900 rounded border border-emerald-800">
                   <span className="flex items-center gap-2 pl-2 pr-4">
                     <Image src="/USDC.svg" alt="" width={20} height={20} />
-                    {market?.asset?.substring(0, 10)}
+                    {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)}
                   </span>
                   <input
                     type="number"
@@ -137,10 +138,10 @@ const BorrowPage = () => {
                   </div>
                   <div className="flex flex-col items-end space-y-2">
                     <span>
-                      <span>{market?.asset?.substring(0, 10)}</span>
+                      <span> { Number(market?.totalAssets)/ (10 ** getTokenDetails(market?.asset)?.decimals  ) } {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)}</span>
                     </span>
                     <span>
-                      <span>{market?.collateral?.substring(0, 10)}</span>
+                      <span> { Number(market?.totalCollateral)/ (10 ** getTokenDetails(market?.collateral)?.decimals  ) } {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}</span>
                     </span>
                   </div>
                 </div>

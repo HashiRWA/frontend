@@ -16,11 +16,26 @@ const poolStats = ["Total Assests", "Total Volume", "Liquidity"];
 
 const LendPage = () => {
   const { id } = useParams();
-  const [amount, setAmount] = useState<string>();
-  const { pools, lend, loading, signer } = useContext(BlockChainContext);
+  const [amount,setAmount] = useState<string>();
+  const [balance,setBalance] = useState<string>();
+  const {pools, lend, loading, address, signer} = useContext(BlockChainContext)
   const market = pools.find((market) => market.id === id);
 
-  const [balance,setBalance] = useState<string>();
+  useEffect(()=>{
+    (async()=>{
+        if(!signer) return
+
+        const res = await useBalance({
+          address:address!,
+          denom:market?.asset,
+          signer
+        })
+
+        console.log(res)
+        setBalance(res.balance)
+    })()
+  },[market?.asset])
+
   useEffect(()=>{
     (async()=>{
         if(!signer) return
@@ -53,8 +68,7 @@ const LendPage = () => {
           <div className="flex gap-2 pb-3">
             <Image src="/USDC.svg" alt="" width={24} height={24} />
             <h3 className="text-xl font-bold">
-              {market?.asset?.substring(0, 10)} /{" "}
-              {market?.collateral?.substring(0, 10)}
+            {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)} /  {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}
             </h3>
           </div>
 
@@ -78,8 +92,7 @@ const LendPage = () => {
                   <span>
                     {market?.strikeprice}{" "}
                     <span className="text-xs font-medium">
-                      {market?.asset?.substring(0, 10)} /{" "}
-                      {market?.collateral?.substring(0, 10)}
+                    {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)} /  {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}
                     </span>
                   </span>
                   <span>{market?.overcollateralizationfactor * 100}%</span>
@@ -115,14 +128,14 @@ const LendPage = () => {
               <div className="space-y-5 rounded-md bg-[#f4fafa] p-4 ring-[1px] ring-[#00494d]">
                 <div className="flex justify-end">
                   <span>
-                    Bal: {BALANCE} {market?.asset.substring(0, 10)}{" "}
+                    Bal: {balance} {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)}{" "}
                     <span className="font-bold uppercase">Max</span>
                   </span>
                 </div>
                 <div className="divide flex items-center divide-x divide-emerald-900 rounded border border-emerald-800">
                   <span className="flex items-center gap-2 pl-2 pr-4">
                     <Image src="/USDC.svg" alt="" width={20} height={20} />
-                    {market?.asset.substring(0, 10)}
+                    {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)}{" "}
                   </span>
                   <input
                     type="number"
@@ -138,16 +151,16 @@ const LendPage = () => {
                   </span>
                   <div className="flex items-center justify-center gap-5">
                     <span>
-                      {ASSET_VALUE}{" "}
+                      { Number(market?.totalAssets)/(10 ** getTokenDetails(market?.asset)?.decimals  )}{" "}
                       <span className="font-bold">
-                        {market?.asset.substring(0, 10)}
+                        {getTokenDetails(market?.asset) ? getTokenDetails(market?.asset)?.symbol : market?.asset?.substring(0,20)}{" "}
                       </span>
                     </span>
                     <span className="font-semibold uppercase">or</span>
                     <span>
-                      {COLLATERAL_VALUE}{" "}
+                      { Number(market?.totalCollateral)/(10 ** getTokenDetails(market?.collateral)?.decimals  )}{" "}
                       <span className="font-bold">
-                        {market?.collateral.substring(0, 10)}
+                        {getTokenDetails(market?.collateral) ? getTokenDetails(market?.collateral)?.symbol : market?.collateral?.substring(0,20)}
                       </span>
                     </span>
                   </div>

@@ -12,6 +12,7 @@ export interface ContractConfig {
 export async function useGiveApproval({
     senderAddress,
 	contractAddress,
+	amount,
 	signer
 }:ContractConfig): Promise<{
 	data:any,
