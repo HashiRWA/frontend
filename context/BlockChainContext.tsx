@@ -13,13 +13,6 @@ import { useContractWrite } from "@/hooks/useContractWrite";
 import {marketAddresses} from "@/constants";
 import { useGiveApproval } from "@/hooks/useGiveApproval";
 
-export type BlockChainContext = {
-  address: string | undefined;
-  signer: (OfflineAminoSigner & OfflineDirectSigner) | undefined;
-  pools: any[];
-  positions: any[];
-  loading: boolean;
-
 export type BlockChainContext ={
 	address: string | undefined,
 	signer: (OfflineAminoSigner & OfflineDirectSigner) | undefined,
