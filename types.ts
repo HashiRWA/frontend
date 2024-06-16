@@ -16,7 +16,8 @@ export interface Position {
   asset:string,
   collateral:string,
   strikeprice:string,
-  maturity: number
+  maturity: number,
+  name:string,
   type: "Lend"|"Borrow",
   principle:number,
   interest:number,

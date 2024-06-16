@@ -18,7 +18,7 @@ const BorrowPage = () => {
   const { pools, loading, borrow , signer, address} = useContext(BlockChainContext);
   const [amount, setAmount] = useState<string>();
   const market = pools.find((market) => market.id === id);
-  const [balance,setBalance] = useState<string>(0);
+  const [balance,setBalance] = useState<string>("0");
 
   return (
     <div className="mx-auto mt-48 w-[60%] rounded-lg bg-white p-6 text-[#374950] shadow-2xl">

@@ -16,10 +16,12 @@ export default function Page() {
               <span>Token Address</span>
               <span>Go to Faucet</span>
             </div>
-            {Object.keys(data).map((key) => (
+            {Object.keys(data).map((key:string) => (
               <div key={key}  className='flex justify-between'>
-                <span>{data[key].name}</span>
-                <span>{data[key].address}</span>
+                {/* @ts-ignore */}
+                <span>{data[key]?.name}</span>
+                {/* @ts-ignore */}
+                <span>{data[key]?.address}</span>
                 <span><a className='' href={`/faucet/${key}`}>Click here</a></span>
               </div>
             ))}

@@ -19,7 +19,7 @@ const LendPage = () => {
 
   const { id } = useParams();
   const [amount,setAmount] = useState<string>();
-  const [balance,setBalance] = useState<string>(0);
+  const [balance,setBalance] = useState<string>("0");
   const {pools, lend, loading, address, signer} = useContext(BlockChainContext)
   const market = pools.find((market) => market.id === id);
 

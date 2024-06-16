@@ -68,7 +68,7 @@ export async function useGiveApproval({
             {
                 increase_allowance:{
                     spender: contractAddress,
-                    amount: Number(amount*(10**6)).toString(),
+                    amount: Number(parseInt(amount)*(10**6)).toString(),
                 }
             },
             "auto",
